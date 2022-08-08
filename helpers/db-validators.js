@@ -1,10 +1,9 @@
-const App = require('../models/app')
+const Application = require('../models/application')
 const Usuario = require('../models/usuario')
+const Categoria = require('../models/categoria')
 
 const esAppValida = async(nombre = '') => {
-    console.log('Nombre de la app')
-    console.log(nombre)
-    const existeApp = await App.findOne({nombre});
+    const existeApp = await Application.findOne({nombre});
     if(!existeApp){
         throw new Error(`El nombre de la app ${nombre} no esta registrado en BD`)
     }
@@ -22,8 +21,25 @@ const existeUsuarioId = async(id) => {
     }
     
 }
+const existeCategoriaId = async(id) => {    
+    const existeCategoria = await Categoria.findById(id);
+    if(!existeCategoria){
+        throw new Error(`El id ${id} no existe en la BD`)
+    }
+    
+}
+const existeCategoriaNombre = async(nombre = '') => {    
+    nombre = nombre.toUpperCase();
+    const existeCategoria = await Categoria.findOne({nombre});
+    if(existeCategoria){
+        throw new Error(`La categoria ${nombre} ya existe en la BD`)
+    }
+    
+}
 module.exports = {
     esAppValida,
     emailExiste,
-    existeUsuarioId
+    existeUsuarioId,
+    existeCategoriaId,
+    existeCategoriaNombre
 }

@@ -16,8 +16,9 @@ const validarJWT = async (req, res = response, next) => {
         const { uid } = jwt.verify(token, process.env.SECRETORPRIVATEKEY);
         const usuario = await Usuario.findById(uid);
     
-        if( usuario ){
+        if( !usuario ){
             return res.status(401).json({
+                uid: uid,
                 msg: 'Token no valido - usuario no existe en BD'
             })
         }
@@ -41,7 +42,7 @@ const validarJWT = async (req, res = response, next) => {
         
     }
 
-    console.log(token);
+    //console.log(token);
 }
 
 module.exports = {
