@@ -10,7 +10,8 @@ const obtenerCategorias = async (req, res = response) => {
     const [total, categorias] = await Promise.all([
         Categoria.countDocuments(parametros),
         Categoria.find(parametros)
-            .populate([{model: 'usuario',path: 'nombre'}])
+            .populate('usuario','nombre')
+            .populate('application','nombre')
             .skip(Number(desde))
             .limit(Number(limite))
     ]);
@@ -23,39 +24,39 @@ const obtenerCategorias = async (req, res = response) => {
 
 const obtenerCategoria = async (req, res = response) => {
     const { id } = req.params;
-    const categoria = await Categoria.findById(id).populate('usuario','nombre').populate('app')
+    const categoria = await Categoria.findById(id)
+                                .populate('usuario','nombre')
+                                .populate('application','nombre')
     res.json(categoria);
 }
 
 const crearCategoria = async (req, res = response) => {
-
-    const nombre = req.body.nombre.toUpperCase();
-    const categoriaDB = await Categoria.findOne({ nombre });
+    const { nombre, application } = req.body;
+    const busqueda = nombre.toUpperCase()
+    const categoriaDB = await Categoria.findOne( { busqueda } );
     if( categoriaDB ){
         return res.status(400).json({
             msg: `La categoria ${ categoriaDB.nombre }, ya existe`
         })
     }
-
     //Generar la data a guardar
     const data = {
         nombre,
-        app: req.app._id,
+        application,
         usuario: req.usuario._id
     }
-    console.log('La data');
-    console.log(req.usuario);
 
     const categoria = new Categoria( data );
 
     await categoria.save();
 
     res.status(201).json(categoria);
+
 }
 
 const actualizarCategoria = async (req, res = response) => {
     const { id } = req.params;
-    const { _id, estado, app, ...data } = req.body;
+    const { _id, estado, application, usuario, ...data } = req.body;
     data.nombre = resto.nombre.toUpperCase();
     data.usuario = req.usuario._id;
 

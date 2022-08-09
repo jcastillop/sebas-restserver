@@ -27,15 +27,7 @@ const usuariosGet = async (req = request, res = response) => {
 const usuariosPost = async (req, res = response) => {
     const {nombre, correo, password, rol, application} = req.body;
 
-    //Generar la data a guardar
-    const data = {
-        nombre, correo, password, rol, 
-        application: req.application._id
-    }
-    console.log('datisimo');
-    console.log(req.app);
-    console.log(data);
-    const usuario = new Usuario(data);
+    const usuario = new Usuario({nombre, correo, password, rol, application});
     //encriptar la contrasena
     const salt = bcryptjs.genSaltSync();//valor por defecto 10
     usuario.password = bcryptjs.hashSync(password, salt);

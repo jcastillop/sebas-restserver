@@ -3,7 +3,7 @@ const { body, check } = require('express-validator');
 
 const { validarJWT, validarCampos } = require('../middlewares');
 
-const { existeCategoriaId, existeCategoriaNombre, esAppValida } = require('../helpers/db-validators');
+const { existeCategoriaId, existeCategoriaNombre, esApplicationValida } = require('../helpers/db-validators');
 
 const { crearCategoria, obtenerCategorias, obtenerCategoria, actualizarCategoria, borrarCategoria } = require('../controllers/categorias');
 
@@ -23,9 +23,8 @@ router.get('/:id', [
 
 router.post('/', [ 
     validarJWT, 
-    body('app','Es necesario el id de la app').notEmpty(),
+    body('application','Es necesario el id de la app').notEmpty(),
     body('nombre','El nombre es obligatorio').notEmpty(),
-    body('usuario','Es necesario el id del usuario').notEmpty(),
     validarCampos
 ], crearCategoria);
 
@@ -34,7 +33,7 @@ router.put('/:id', [
     check('id', 'No es un id valido').isMongoId(),
     check('id').custom( existeCategoriaId ),
     check('nombre').custom( existeCategoriaNombre ),
-    body('app').custom( esAppValida ),
+    body('app').custom( esApplicationValida ),
     validarCampos
 ], actualizarCategoria);
 

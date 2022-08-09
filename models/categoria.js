@@ -6,9 +6,9 @@ const CategoriaSchema = Schema({
         required: [true, 'El nombre es obligatorio'],
         unique: true
     },
-    app:{
+    application:{
         type: Schema.Types.ObjectId,
-        ref:'App',
+        ref:'Application',
         required: true
     },    
     estado:{
