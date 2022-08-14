@@ -52,7 +52,17 @@ const ProductoSchema = Schema({
         type: Schema.Types.ObjectId,
         ref:'Usuario',
         required: true
-    }      
+    },
+    descripcion: {
+        type: String
+    }, 
+    disponible:{
+        type: Boolean,
+        default: true
+    },       
+    img: {
+        type: String
+    }
 })
 
 ProductoSchema.methods.toJSON = function () {
