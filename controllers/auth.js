@@ -48,6 +48,19 @@ const login = async (req, res = response) => {
 
 }
 
+const validarTokenUsuario = async (req, res = response ) => {
+
+    // Generar el JWT
+    const token = await generarJWT( req.usuario._id );
+    
+    res.json({
+        usuario: req.usuario,
+        token: token,
+    })
+
+}
+
 module.exports = {
-    login
+    login,
+    validarTokenUsuario
 }
