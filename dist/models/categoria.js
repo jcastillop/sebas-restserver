@@ -26,6 +26,11 @@ const CategoriaSchema = new mongoose_1.Schema({
         ref: 'Supplier',
         required: true
     },
+    aplicacion: {
+        type: mongoose_1.Schema.Types.ObjectId,
+        ref: 'Application',
+        required: true
+    },
     estado: {
         type: Boolean,
         default: true

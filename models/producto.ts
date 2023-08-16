@@ -1,18 +1,26 @@
-import { Model, Schema, model } from "mongoose";
-import { IProducto } from "../interfaces";
+import { Schema, model } from "mongoose";
+import { IProducto, ProductoModel } from "../interfaces";
 
-type ProductoModel = Model<IProducto, {}>;
-
-const ProductoSchema = new Schema<IProducto, ProductoModel>({
+const ProductoSchema = new Schema<IProducto>({
     nombre:{
         type: String,
         required: [true, 'El nombre de la categoria es obligatorio']
     },
-    categoria:[{
+    empresa:{
+        type: Schema.Types.ObjectId,
+        ref:'Supplier',
+        required: true
+    },    
+    aplicacion:{
+        type: Schema.Types.ObjectId,
+        ref:'Application',
+        required: true
+    },     
+    categoria:{
         type: Schema.Types.ObjectId,
         ref:'Categoria',
         required: true
-    }],   
+    },   
     codigo:{
         type: String
     },
@@ -27,11 +35,6 @@ const ProductoSchema = new Schema<IProducto, ProductoModel>({
         type: String,
         required: [true, 'La descripcion de la categoria es obligatoria']
     },
-    empresa:{
-        type: Schema.Types.ObjectId,
-        ref:'Supplier',
-        required: true
-    },  
     estado:{
         type: Boolean, 
         default: true
@@ -49,6 +52,34 @@ const ProductoSchema = new Schema<IProducto, ProductoModel>({
         default: 0
     },
 })
+ProductoSchema.static('saveProducto', function saveProducto( producto: IProducto ) {
+    return this.create(producto);
+});
+ProductoSchema.static('getProducto', function getProducto( id: Schema.Types.ObjectId ) {
+    return this.findById(id);
+});
+ProductoSchema.static('getProductos', function getProductos( aplicacion: Schema.Types.ObjectId, empresa: Schema.Types.ObjectId, skip: number, limit: number, estado: boolean ) {
+
+    const parametros = { estado : true, empresa: empresa, aplicacion: aplicacion }
+
+    return Promise.all([
+        this.countDocuments(parametros),
+        this.find(parametros)
+            //.populate([{ path: 'empresa', strictPopulate: false, select: 'nombre_comercial razon_social' }])
+            .populate([{ path: 'empresa', strictPopulate: false }])    
+            .populate([{ path: 'aplicacion', strictPopulate: false }])    
+            .populate([{ path: 'categoria', strictPopulate: false }])   
+            .skip(Number(skip))
+            .limit(Number(limit))
+    ]); 
+
+});
+ProductoSchema.static('updateProducto', function updateProducto( producto: IProducto ) {
+    //return this.updateOne({ "_id": id}, { "estado": 0})
+});
+ProductoSchema.static('deleteProducto', function deleteProducto( id: Schema.Types.ObjectId ) {
+    return this.updateOne({ "_id": id}, { "estado": false})
+});
 
 ProductoSchema.methods.toJSON = function () {
     //tiene que ser una funcion normal
@@ -57,4 +88,4 @@ ProductoSchema.methods.toJSON = function () {
     return data;
 }
 
-export default model( 'Producto', ProductoSchema)
+export default model<IProducto, ProductoModel>( 'Producto', ProductoSchema)

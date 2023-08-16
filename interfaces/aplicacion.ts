@@ -1,8 +1,5 @@
-import { Document, Schema } from 'mongoose';
-
-export interface IAplicacion extends Document{
+export interface IAplicacion {
     nombre: string;
     descripcion: string;
-    suppliers: Schema.Types.ObjectId;
-    estado?: boolean;
+    estado: boolean;
 }

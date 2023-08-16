@@ -21,15 +21,16 @@ const AplicacionSchema = new mongoose_1.Schema({
         type: String,
         required: [true, 'La descripcion de la aplicacion es obligatoria']
     },
-    suppliers: [{
-            type: mongoose_1.Schema.Types.ObjectId,
-            ref: 'Supplier',
-            required: true
-        }],
     estado: {
         type: Boolean,
         default: true
     },
+});
+AplicacionSchema.static('createAplicacion', function createAplicacion(nombre, descripcion) {
+    return this.create({ nombre, descripcion });
+});
+AplicacionSchema.method('fullDescripcion', function fullDescripcion() {
+    return this.nombre + '|' + this.descripcion;
 });
 AplicacionSchema.methods.toJSON = function () {
     //tiene que ser una funcion normal

@@ -38,16 +38,21 @@ const UsuarioSchema = new mongoose_1.Schema({
     img: {
         type: String,
     },
-    rols: [{
-            type: mongoose_1.Schema.Types.ObjectId,
-            ref: 'Rol',
-            required: true
-        }],
-    applications: [{
-            type: mongoose_1.Schema.Types.ObjectId,
-            ref: 'Application',
-            required: true
-        }],
+    rol: {
+        type: mongoose_1.Schema.Types.ObjectId,
+        ref: 'Rol',
+        required: true
+    },
+    aplicacion: {
+        type: mongoose_1.Schema.Types.ObjectId,
+        ref: 'Application',
+        required: true
+    },
+    empresa: {
+        type: mongoose_1.Schema.Types.ObjectId,
+        ref: 'Supplier',
+        required: true
+    },
     estado: {
         type: Boolean,
         default: true

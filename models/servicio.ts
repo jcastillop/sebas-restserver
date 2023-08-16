@@ -1,9 +1,15 @@
 import { Model, Schema, model } from "mongoose";
-import { IServicio } from "../interfaces";
+interface IServicio extends Document{
+    codigo: string;
+    empresa: Schema.Types.ObjectId;
+    aplicacion: Schema.Types.ObjectId;        
+    descripcion: string;
+    estado: boolean;
+    nombre: string;
+    productos: Schema.Types.ObjectId;
+}
 
-type ServicioModel = Model<IServicio, {}>;
-
-const ServicioSchema = new Schema<IServicio, ServicioModel>({
+const ServicioSchema = new Schema<IServicio>({
     codigo:{
         type: String,
         required: [true, 'El codigo del servicio es obligatorio']
@@ -14,6 +20,11 @@ const ServicioSchema = new Schema<IServicio, ServicioModel>({
     empresa:{
         type: Schema.Types.ObjectId,
         ref:'Supplier',
+        required: true
+    },    
+    aplicacion:{
+        type: Schema.Types.ObjectId,
+        ref:'Application',
         required: true
     },     
     estado:{

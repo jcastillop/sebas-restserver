@@ -1,6 +1,6 @@
 import { Document } from 'mongoose';
 
-export interface ICliente extends Document{
+export interface ICliente{
     tipo_documento: Number;
     numero_documento: string;
     nombre_comercial: string;

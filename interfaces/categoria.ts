@@ -1,6 +1,6 @@
 import { Document, Schema } from 'mongoose';
 
-export interface ICategoria extends Document{
+export interface ICategoria{
     nombre: string;
     descripcion: string;
     empresa: Schema.Types.ObjectId;

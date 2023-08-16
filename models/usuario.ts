@@ -1,7 +1,19 @@
 import { Schema, model } from "mongoose";
-import { IUsuario } from "../interfaces";
 import { compare, hash, hashSync } from "bcrypt";
 import constantes from "../helpers/constantes";
+
+interface IUsuario extends Document{
+    usuario: string;
+    nombre: string;
+    correo: string;
+    password: string;
+    img: string;
+    rol: Schema.Types.ObjectId;
+    aplicacion: Schema.Types.ObjectId;
+    empresa: Schema.Types.ObjectId;
+    estado: boolean;
+    
+}
 
 const UsuarioSchema = new Schema<IUsuario>({
     usuario:{
@@ -25,20 +37,25 @@ const UsuarioSchema = new Schema<IUsuario>({
     img:{
         type: String,
     },
-    rols:[{
+    rol:{
         type: Schema.Types.ObjectId,
         ref:'Rol',
         required: true
-    }],
-    applications:[{
+    },
+    aplicacion:{
         type: Schema.Types.ObjectId,
         ref:'Application',
         required: true
-    }],       
+    },       
+    empresa:{
+        type: Schema.Types.ObjectId,
+        ref:'Supplier',
+        required: true
+    },
     estado:{
         type: Boolean,
         default:true
-    }
+    }    
 });
 
 UsuarioSchema.pre('save', function(next): void {

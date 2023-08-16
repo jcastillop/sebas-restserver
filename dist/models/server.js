@@ -18,12 +18,15 @@ const config_1 = __importDefault(require("../database/config"));
 const usuarios_1 = __importDefault(require("../routes/usuarios"));
 const auth_1 = __importDefault(require("../routes/auth"));
 const categorias_1 = __importDefault(require("../routes/categorias"));
+const productos_1 = __importDefault(require("../routes/productos"));
+const helpers_1 = require("../helpers");
 class Server {
     constructor() {
         this.apiPaths = {
             usuarios: '/api/usuarios',
             auth: '/api/auth',
             categorias: '/api/categorias',
+            productos: '/api/productos',
         };
         this.app = (0, express_1.default)();
         this.port = process.env.PORT || '8800';
@@ -41,6 +44,19 @@ class Server {
             }
         });
     }
+    logger(request, response, next) {
+        (0, helpers_1.Log4js)(`${request.method} ${request.url} ${request.hostname}`);
+        var res_value = request.method === "GET" ? request.query : request.body;
+        (0, helpers_1.Log4js)(`REQUEST PARAMS: ${JSON.stringify(res_value)}`);
+        (0, helpers_1.Log4js)(`RESPONSE STATUS: ${response.statusCode}`);
+        let oldSend = response.send;
+        response.send = function (data) {
+            (0, helpers_1.Log4js)(`RESPONSE STATUS: ${data}`);
+            response.send = oldSend;
+            return response.send(data);
+        };
+        next();
+    }
     middlewares() {
         //CORS
         this.app.use((0, cors_1.default)());
@@ -48,11 +64,14 @@ class Server {
         this.app.use(express_1.default.json());
         //Carepta publica
         this.app.use(express_1.default.static('public'));
+        //Logger
+        this.app.use(this.logger);
     }
     routes() {
         this.app.use(this.apiPaths.usuarios, usuarios_1.default);
         this.app.use(this.apiPaths.auth, auth_1.default);
         this.app.use(this.apiPaths.categorias, categorias_1.default);
+        this.app.use(this.apiPaths.productos, productos_1.default);
     }
     listen() {
         this.app.listen(this.port, () => {

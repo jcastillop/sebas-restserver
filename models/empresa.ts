@@ -1,9 +1,20 @@
-import { Model, Schema, model } from "mongoose";
-import { IEmpresa} from "../interfaces";
+import { HydratedDocument, Model, Schema, model } from "mongoose";
+interface IEmpresa extends Document {
+    nombre_comercial: string;
+    razon_social: string;
+    ruc: string;
+    ubigeo: string;
+    direccion: string;
+    estado: boolean;
+}
+interface IEmpresaMethods {
+    fullDescripcion(): string;
+}
+interface EmpresaModel extends Model<IEmpresa, {}, IEmpresaMethods> {
+    createAplicacion(nombre: string, descripcion: string): Promise<HydratedDocument<IEmpresa, IEmpresaMethods>>;
+}
 
-type EmpresaModel = Model<IEmpresa, {}>;
-
-const EmpresaSchema = new Schema<IEmpresa, EmpresaModel>({
+const EmpresaSchema = new Schema<IEmpresa, EmpresaModel, IEmpresaMethods>({
     nombre_comercial:{
         type: String,
         required: [true, 'El nombre comercial de la empresa es obligatorio']

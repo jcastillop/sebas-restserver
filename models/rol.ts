@@ -1,9 +1,12 @@
 import { Model, Schema, model } from "mongoose";
-import { IRol } from "../interfaces";
 
-type RolModel = Model<IRol, {}>;
+interface IRol extends Document{
+    nombre: string;
+    descripcion: string;
+    estado?: boolean;
+}
 
-const RolSchema = new Schema<IRol, RolModel>({
+const RolSchema = new Schema<IRol>({
     nombre:{
         type: String,
         required: [true, 'El nombre del rol es obligatorio']

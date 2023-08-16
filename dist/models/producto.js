@@ -17,11 +17,21 @@ const ProductoSchema = new mongoose_1.Schema({
         type: String,
         required: [true, 'El nombre de la categoria es obligatorio']
     },
-    categoria: [{
-            type: mongoose_1.Schema.Types.ObjectId,
-            ref: 'Categoria',
-            required: true
-        }],
+    empresa: {
+        type: mongoose_1.Schema.Types.ObjectId,
+        ref: 'Supplier',
+        required: true
+    },
+    aplicacion: {
+        type: mongoose_1.Schema.Types.ObjectId,
+        ref: 'Application',
+        required: true
+    },
+    categoria: {
+        type: mongoose_1.Schema.Types.ObjectId,
+        ref: 'Categoria',
+        required: true
+    },
     codigo: {
         type: String
     },
@@ -35,11 +45,6 @@ const ProductoSchema = new mongoose_1.Schema({
     descripcion: {
         type: String,
         required: [true, 'La descripcion de la categoria es obligatoria']
-    },
-    empresa: {
-        type: mongoose_1.Schema.Types.ObjectId,
-        ref: 'Supplier',
-        required: true
     },
     estado: {
         type: Boolean,
@@ -57,6 +62,31 @@ const ProductoSchema = new mongoose_1.Schema({
         type: Number,
         default: 0
     },
+});
+ProductoSchema.static('saveProducto', function saveProducto(producto) {
+    return this.create(producto);
+});
+ProductoSchema.static('getProducto', function getProducto(id) {
+    return this.findById(id);
+});
+ProductoSchema.static('getProductos', function getProductos(aplicacion, empresa, skip, limit, estado) {
+    const parametros = { estado: true, empresa: empresa, aplicacion: aplicacion };
+    return Promise.all([
+        this.countDocuments(parametros),
+        this.find(parametros)
+            //.populate([{ path: 'empresa', strictPopulate: false, select: 'nombre_comercial razon_social' }])
+            .populate([{ path: 'empresa', strictPopulate: false }])
+            .populate([{ path: 'aplicacion', strictPopulate: false }])
+            .populate([{ path: 'categoria', strictPopulate: false }])
+            .skip(Number(skip))
+            .limit(Number(limit))
+    ]);
+});
+ProductoSchema.static('updateProducto', function updateProducto(producto) {
+    //return this.updateOne({ "_id": id}, { "estado": 0})
+});
+ProductoSchema.static('deleteProducto', function deleteProducto(id) {
+    return this.updateOne({ "_id": id }, { "estado": false });
 });
 ProductoSchema.methods.toJSON = function () {
     //tiene que ser una funcion normal

@@ -1,9 +1,14 @@
 import { Model, Schema, model } from "mongoose";
-import { ICategoria } from "../interfaces";
 
-type CategoriaModel = Model<ICategoria, {}>;
+interface ICategoria extends Document{
+    nombre: string;
+    descripcion: string;
+    empresa: Schema.Types.ObjectId;
+    aplicacion: Schema.Types.ObjectId;
+    estado: boolean;
+}
 
-const CategoriaSchema = new Schema<ICategoria, CategoriaModel>({
+const CategoriaSchema = new Schema<ICategoria>({
     nombre:{
         type: String,
         required: [true, 'El nombre de la categoria es obligatorio']
@@ -17,6 +22,11 @@ const CategoriaSchema = new Schema<ICategoria, CategoriaModel>({
         ref:'Supplier',
         required: true
     },    
+    aplicacion:{
+        type: Schema.Types.ObjectId,
+        ref:'Application',
+        required: true
+    },        
     estado:{
         type: Boolean, 
         default: true

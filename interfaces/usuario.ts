@@ -6,8 +6,9 @@ export interface IUsuario {
     correo: string;
     password: string;
     img: string;
-    rol: string;
-    applications: Schema.Types.ObjectId;
-    rols: Schema.Types.ObjectId;
+    rol: Schema.Types.ObjectId;
+    application: Schema.Types.ObjectId;
+    empresa: Schema.Types.ObjectId;
     estado: boolean;
+    
 }

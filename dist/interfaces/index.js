@@ -18,6 +18,7 @@ __exportStar(require("./aplicacion"), exports);
 __exportStar(require("./categoria"), exports);
 __exportStar(require("./cliente"), exports);
 __exportStar(require("./empresa"), exports);
+__exportStar(require("./generics"), exports);
 __exportStar(require("./producto"), exports);
 __exportStar(require("./rol"), exports);
 __exportStar(require("./usuario"), exports);

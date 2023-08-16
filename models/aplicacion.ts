@@ -1,9 +1,18 @@
-import { Model, Schema, model } from "mongoose";
-import { IAplicacion} from "../interfaces";
+import { HydratedDocument, Model, Schema, model } from "mongoose";
 
-type AplicacionModel = Model<IAplicacion, {}>;
+interface IAplicacion {
+    nombre: string;
+    descripcion: string;
+    estado: boolean;
+}
+interface IAplicacionMethods {
+    fullDescripcion(): string;
+}
+interface AplicacionModel extends Model<IAplicacion, {}, IAplicacionMethods> {
+    createAplicacion(nombre: string, descripcion: string): Promise<HydratedDocument<IAplicacion, IAplicacionMethods>>;
+}
 
-const AplicacionSchema = new Schema<IAplicacion, AplicacionModel>({
+const AplicacionSchema = new Schema<IAplicacion, AplicacionModel, IAplicacionMethods>({
     nombre:{
         type: String,
         required: [true, 'El nombre de la aplicacion es obligatorio']
@@ -12,16 +21,19 @@ const AplicacionSchema = new Schema<IAplicacion, AplicacionModel>({
         type: String,
         required: [true, 'La descripcion de la aplicacion es obligatoria']
     },
-    suppliers:[{
-        type: Schema.Types.ObjectId,
-        ref:'Supplier',
-        required: true
-    }],     
     estado:{
         type: Boolean, 
         default: true
     },        
 })
+
+AplicacionSchema.static('createAplicacion', function createAplicacion(nombre: string, descripcion: string) {
+    return this.create({ nombre, descripcion });
+});
+
+AplicacionSchema.method('fullDescripcion', function fullDescripcion(): string {
+    return this.nombre + '|' + this.descripcion;
+  });
 
 AplicacionSchema.methods.toJSON = function () {
     //tiene que ser una funcion normal

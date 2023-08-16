@@ -1,6 +1,4 @@
-import { Document } from 'mongoose';
-
-export interface IEmpresa extends Document{
+export interface IEmpresa{
     nombre_comercial: string;
     razon_social: string;
     ruc: string;

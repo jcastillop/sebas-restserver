@@ -1,9 +1,19 @@
 import { Model, Schema, model } from "mongoose";
-import { ICliente} from "../interfaces";
+interface ICliente extends Document{
+    tipo_documento: Number;
+    numero_documento: string;
+    nombre_comercial: string;
+    razon_social: string;
+    ubigeo: string;
+    direccion: string;
+    estado: boolean;
+}
 
-type ClienteModel = Model<ICliente, {}>;
+interface IClienteMethods {
+    fullDescripcion(): string;
+}
 
-const ClienteSchema = new Schema<ICliente, ClienteModel>({
+const ClienteSchema = new Schema<ICliente>({
     tipo_documento:{
         type: Number,
         required: [true, 'El tipo de documento es obligatorio']
