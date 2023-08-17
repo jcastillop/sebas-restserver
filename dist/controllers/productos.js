@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.productoEliminar = exports.productoListar = exports.productoObtener = exports.productoNuevo = void 0;
+exports.productoEliminar = exports.productoActualizar = exports.productoListar = exports.productoObtener = exports.productoNuevo = void 0;
 const models_1 = require("../models");
 const helpers_1 = require("../helpers");
 const productoNuevo = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -32,14 +32,14 @@ const productoNuevo = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         if (productoSaved) {
             res.json({
                 messsage: 'productoNuevo - Producto almacenado correctamente',
-                cliente: productoSaved,
+                producto: productoSaved,
                 hasError: false
             });
         }
         else {
             res.json({
                 messsage: 'productoNuevo - Ocurrió un error durante la creación del producto',
-                cliente: null,
+                producto: null,
                 hasError: true
             });
         }
@@ -48,7 +48,7 @@ const productoNuevo = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         //log4js( error, 'error');
         res.status(404).json({
             messsage: `Error no identificado ${error}`,
-            cliente: null,
+            producto: null,
             hasError: true
         });
     }
@@ -68,7 +68,7 @@ const productoObtener = (req, res) => __awaiter(void 0, void 0, void 0, function
         else {
             res.json({
                 messsage: 'productoObtener - Ocurrió un error durante la busqueda del producto',
-                cliente: null,
+                producto: null,
                 hasError: true
             });
         }
@@ -77,7 +77,7 @@ const productoObtener = (req, res) => __awaiter(void 0, void 0, void 0, function
         //log4js( error, 'error');
         res.status(404).json({
             messsage: `Error no identificado ${error}`,
-            cliente: null,
+            producto: null,
             hasError: true
         });
     }
@@ -99,7 +99,7 @@ const productoListar = (req, res) => __awaiter(void 0, void 0, void 0, function*
             res.json({
                 messsage: 'productoListar - Ocurrió un error durante la busqueda del productos',
                 total: 0,
-                cliente: null,
+                producto: null,
                 hasError: true
             });
         }
@@ -109,17 +109,56 @@ const productoListar = (req, res) => __awaiter(void 0, void 0, void 0, function*
         res.status(404).json({
             messsage: `Error no identificado ${error}`,
             total: 0,
-            cliente: null,
+            producto: null,
             hasError: true
         });
     }
 });
 exports.productoListar = productoListar;
+const productoActualizar = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { id, nombre, empresa, aplicacion, categoria, codigo, codigo_sunat, descuento, descripcion, precio_unitario, unidad_medida, valor_unitario } = req.body;
+        const producto = {
+            _id: id,
+            nombre,
+            empresa,
+            aplicacion,
+            categoria,
+            codigo,
+            codigo_sunat,
+            descuento,
+            descripcion,
+            precio_unitario,
+            unidad_medida,
+            valor_unitario
+        };
+        const service = yield models_1.Producto.updateProducto(producto);
+        if (service.matchedCount == helpers_1.Constantes.MONGOOSE_UPDATE_SUCCESS) {
+            res.json({
+                messsage: 'productoActualizar - Producto actualizado',
+                hasError: false
+            });
+        }
+        else {
+            res.json({
+                messsage: 'productoActualizar - Ocurrió un error durante la actualizacion del producto',
+                hasError: true
+            });
+        }
+    }
+    catch (error) {
+        //log4js( error, 'error');
+        res.status(404).json({
+            messsage: `Error no identificado ${error}`,
+            hasError: false
+        });
+    }
+});
+exports.productoActualizar = productoActualizar;
 const productoEliminar = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { id } = req.body;
         const service = yield models_1.Producto.deleteProducto(id);
-        console.log(service.matchedCount);
         if (service.matchedCount == helpers_1.Constantes.MONGOOSE_UPDATE_SUCCESS) {
             res.json({
                 messsage: 'productoEliminar - Producto eliminado',
@@ -129,7 +168,6 @@ const productoEliminar = (req, res) => __awaiter(void 0, void 0, void 0, functio
         else {
             res.json({
                 messsage: 'productoEliminar - Ocurrió un error durante la eliminacion del producto',
-                cliente: null,
                 hasError: true
             });
         }
@@ -138,7 +176,6 @@ const productoEliminar = (req, res) => __awaiter(void 0, void 0, void 0, functio
         //log4js( error, 'error');
         res.status(404).json({
             messsage: `Error no identificado ${error}`,
-            cliente: null,
             hasError: true
         });
     }

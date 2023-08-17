@@ -26,13 +26,13 @@ export const productoNuevo = async (req: Request, res: Response) => {
         if(productoSaved){
             res.json({
                 messsage: 'productoNuevo - Producto almacenado correctamente',
-                cliente: productoSaved,
+                producto: productoSaved,
                 hasError:false
             }); 
         }else{
             res.json({
                 messsage: 'productoNuevo - Ocurrió un error durante la creación del producto',
-                cliente: null,
+                producto: null,
                 hasError:true
             }); 
         }
@@ -41,7 +41,7 @@ export const productoNuevo = async (req: Request, res: Response) => {
         //log4js( error, 'error');
         res.status(404).json({
             messsage: `Error no identificado ${ error }`,
-            cliente: null,
+            producto: null,
             hasError:true
         });                 
     }
@@ -62,7 +62,7 @@ export const productoObtener = async (req: Request, res: Response) => {
         }else{
             res.json({
                 messsage: 'productoObtener - Ocurrió un error durante la busqueda del producto',
-                cliente: null,
+                producto: null,
                 hasError:true
             }); 
         }
@@ -71,7 +71,7 @@ export const productoObtener = async (req: Request, res: Response) => {
         //log4js( error, 'error');
         res.status(404).json({
             messsage: `Error no identificado ${ error }`,
-            cliente: null,
+            producto: null,
             hasError:true
         });                 
     }
@@ -95,7 +95,7 @@ export const productoListar = async (req: Request, res: Response) => {
             res.json({
                 messsage: 'productoListar - Ocurrió un error durante la busqueda del productos',
                 total: 0,
-                cliente: null,
+                producto: null,
                 hasError:true
             }); 
         }
@@ -105,8 +105,50 @@ export const productoListar = async (req: Request, res: Response) => {
         res.status(404).json({
             messsage: `Error no identificado ${ error }`,
             total: 0,
-            cliente: null,
+            producto: null,
             hasError:true
+        });                 
+    }
+}
+
+export const productoActualizar = async (req: Request, res: Response) => {
+    try {
+
+        const { id, nombre, empresa, aplicacion, categoria, codigo, codigo_sunat, descuento, descripcion, precio_unitario, unidad_medida, valor_unitario } = req.body;
+
+        const producto: IProducto = { 
+            _id: id, 
+            nombre, 
+            empresa, 
+            aplicacion, 
+            categoria, 
+            codigo, 
+            codigo_sunat, 
+            descuento, 
+            descripcion, 
+            precio_unitario, 
+            unidad_medida, 
+            valor_unitario 
+        }        
+        
+        const service: IUpdateService = await Producto.updateProducto(producto);
+
+        if(service.matchedCount == Constantes.MONGOOSE_UPDATE_SUCCESS){
+            res.json({
+                messsage: 'productoActualizar - Producto actualizado',
+                hasError:false
+            }); 
+        }else{
+            res.json({
+                messsage: 'productoActualizar - Ocurrió un error durante la actualizacion del producto',
+                hasError:true
+            }); 
+        }         
+    } catch (error) {
+        //log4js( error, 'error');
+        res.status(404).json({
+            messsage: `Error no identificado ${ error }`,
+            hasError:false
         });                 
     }
 }
@@ -117,8 +159,6 @@ export const productoEliminar = async (req: Request, res: Response) => {
         
         const service: IUpdateService = await Producto.deleteProducto(id);
 
-        console.log(service.matchedCount)
-
         if(service.matchedCount == Constantes.MONGOOSE_UPDATE_SUCCESS){
             res.json({
                 messsage: 'productoEliminar - Producto eliminado',
@@ -127,7 +167,6 @@ export const productoEliminar = async (req: Request, res: Response) => {
         }else{
             res.json({
                 messsage: 'productoEliminar - Ocurrió un error durante la eliminacion del producto',
-                cliente: null,
                 hasError:true
             }); 
         }         
@@ -135,7 +174,6 @@ export const productoEliminar = async (req: Request, res: Response) => {
         //log4js( error, 'error');
         res.status(404).json({
             messsage: `Error no identificado ${ error }`,
-            cliente: null,
             hasError:true
         });                 
     }

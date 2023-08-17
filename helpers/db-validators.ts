@@ -23,6 +23,22 @@ export const existeUsuarioId = async(id: Schema.Types.ObjectId) => {
     }
     
 }
+
+export const existeCodigoProducto = async(codigo: string, empresa: Schema.Types.ObjectId, aplicacion: Schema.Types.ObjectId) => {    
+    console.log(empresa, aplicacion);
+    const existeProducto = await Usuario.find({ codigo, empresa, aplicacion});
+    if(existeProducto){
+        throw new Error(`El codigo ${codigo} de producto ya existe`)
+    } 
+}
+
+export const existeNombreProducto = async(nombre: string, empresa: Schema.Types.ObjectId, aplicacion: Schema.Types.ObjectId) => {    
+    console.log(empresa, aplicacion);
+    const existeProducto = await Usuario.find({ nombre, empresa, aplicacion});
+    if(existeProducto){
+        throw new Error(`El nombre ${nombre} de producto ya existe`)
+    } 
+}
 // const existeCategoriaId = async(id) => {    
 //     const existeCategoria = await Categoria.findById(id);
 //     if(!existeCategoria){

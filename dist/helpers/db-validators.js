@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.existeUsuarioId = exports.existeUsuarioNombre = exports.esApplicationValida = void 0;
+exports.existeNombreProducto = exports.existeCodigoProducto = exports.existeUsuarioId = exports.existeUsuarioNombre = exports.esApplicationValida = void 0;
 const models_1 = require("../models");
 const esApplicationValida = (id = '') => __awaiter(void 0, void 0, void 0, function* () {
     console.log(`entro al custom validation ${id}`);
@@ -33,6 +33,22 @@ const existeUsuarioId = (id) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.existeUsuarioId = existeUsuarioId;
+const existeCodigoProducto = (codigo, empresa, aplicacion) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log(empresa, aplicacion);
+    const existeProducto = yield models_1.Usuario.find({ codigo, empresa, aplicacion });
+    if (existeProducto) {
+        throw new Error(`El codigo ${codigo} de producto ya existe`);
+    }
+});
+exports.existeCodigoProducto = existeCodigoProducto;
+const existeNombreProducto = (nombre, empresa, aplicacion) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log(empresa, aplicacion);
+    const existeProducto = yield models_1.Usuario.find({ nombre, empresa, aplicacion });
+    if (existeProducto) {
+        throw new Error(`El nombre ${nombre} de producto ya existe`);
+    }
+});
+exports.existeNombreProducto = existeNombreProducto;
 // const existeCategoriaId = async(id) => {    
 //     const existeCategoria = await Categoria.findById(id);
 //     if(!existeCategoria){

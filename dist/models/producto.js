@@ -83,7 +83,20 @@ ProductoSchema.static('getProductos', function getProductos(aplicacion, empresa,
     ]);
 });
 ProductoSchema.static('updateProducto', function updateProducto(producto) {
-    //return this.updateOne({ "_id": id}, { "estado": 0})
+    return this.updateOne({ "_id": producto._id }, { "$set": {
+            "nombre": producto.nombre,
+            "empresa": producto.empresa,
+            "aplicacion": producto.aplicacion,
+            "categoria": producto.categoria,
+            "codigo": producto.codigo,
+            "codigo_sunat": producto.codigo_sunat,
+            "descuento": producto.descuento,
+            "descripcion": producto.descripcion,
+            "precio_unitario": producto.precio_unitario,
+            "unidad_medida": producto.unidad_medida,
+            "valor_unitario": producto.valor_unitario
+        }
+    });
 });
 ProductoSchema.static('deleteProducto', function deleteProducto(id) {
     return this.updateOne({ "_id": id }, { "estado": false });

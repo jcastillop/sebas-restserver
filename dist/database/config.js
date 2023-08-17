@@ -13,8 +13,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importDefault(require("mongoose"));
+const helpers_1 = require("../helpers");
 const dbConnnection = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        yield mongoose_1.default.set('debug', function (collectionName, method, query, doc) {
+            (0, helpers_1.Log4js)(`${collectionName}.${method} - ${JSON.stringify(query)} - ${JSON.stringify(doc)}`);
+        });
         yield mongoose_1.default.connect(process.env.MONGO_CNN || "");
         console.log('base de datos on line');
     }

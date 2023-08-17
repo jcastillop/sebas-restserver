@@ -17,6 +17,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = require("mongoose");
 const bcrypt_1 = require("bcrypt");
 const constantes_1 = __importDefault(require("../helpers/constantes"));
+const mongodb_1 = require("mongodb");
 const UsuarioSchema = new mongoose_1.Schema({
     usuario: {
         type: String,
@@ -59,12 +60,47 @@ const UsuarioSchema = new mongoose_1.Schema({
     }
 });
 UsuarioSchema.pre('save', function (next) {
+    console.log("entramos al middleware");
     const user = this;
+    if (!user.password)
+        return;
     if (!user.isModified('password'))
         return;
     const hash = (0, bcrypt_1.hashSync)(user.password, constantes_1.default.SALT_WORK_FACTOR);
     user.password = hash;
     return next();
+});
+UsuarioSchema.static('saveUsuario', function saveUsuario(usuario) {
+    return this.create(usuario);
+});
+UsuarioSchema.static('getUsuario', function getUsuario(id) {
+    return this.findById(new mongodb_1.ObjectId(id));
+});
+UsuarioSchema.static('getUsuarios', function getUsuarios(aplicacion, empresa, skip, limit, estado) {
+    const parametros = { estado: true, empresa: empresa, aplicacion: aplicacion };
+    return Promise.all([
+        this.countDocuments(parametros),
+        this.find(parametros)
+            //.populate([{ path: 'empresa', strictPopulate: false, select: 'nombre_comercial razon_social' }])
+            .populate([{ path: 'empresa', strictPopulate: false }])
+            .populate([{ path: 'aplicacion', strictPopulate: false }])
+            .populate([{ path: 'rol', strictPopulate: false }])
+            .skip(Number(skip))
+            .limit(Number(limit))
+    ]);
+});
+UsuarioSchema.static('updateUsuario', function updateUsuario(usuario) {
+    return this.updateOne({ "_id": usuario._id }, { "$set": {
+            "nombre": usuario.nombre,
+            "empresa": usuario.empresa,
+            "aplicacion": usuario.aplicacion,
+            "rol": usuario.rol,
+            "correo": usuario.correo
+        }
+    });
+});
+UsuarioSchema.static('deleteUsuario', function deleteUsuario(id) {
+    return this.updateOne({ "_id": id }, { "estado": false });
 });
 UsuarioSchema.methods.toJSON = function () {
     //tiene que ser una funcion normal

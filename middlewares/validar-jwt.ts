@@ -1,8 +1,13 @@
 import { NextFunction, Request, Response } from "express";
 import jwt, { Secret, JwtPayload } from 'jsonwebtoken';
+import { Usuario } from "../models";
 //const jwt = require('jsonwebtoken');
 
-const Usuario = require('../models/usuario');
+declare module "jsonwebtoken" {
+    export interface JwtPayload {
+        uid: string
+    }
+}
 
 const validarJWT = async (req: Request, res: Response, next: NextFunction) => {
     const token = req.header('x-token');
@@ -14,10 +19,9 @@ const validarJWT = async (req: Request, res: Response, next: NextFunction) => {
 
     try {
 
-        const decoded  = jwt.verify(token, process.env.SECRETORPRIVATEKEY || 'KEYNOTEXIST');
-        console.log("El codigo desencriptado: ");
-        console.log(decoded);
-        const usuario = await Usuario.findById(decoded).populate('application','nombre');
+        const decoded  = <jwt.JwtPayload>jwt.verify(token, process.env.SECRETORPRIVATEKEY || 'KEYNOTEXIST');
+        
+        const usuario = await Usuario.getUsuario(decoded.uid)
     
         if( !usuario ){
             return res.status(401).json({
@@ -31,9 +35,6 @@ const validarJWT = async (req: Request, res: Response, next: NextFunction) => {
                 msg: 'Token no valido - usuario inactivo'
             })
         }
-        
-        //req.usuario =  usuario;
-
         next();
         
     } catch (error) {

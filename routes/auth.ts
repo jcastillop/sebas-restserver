@@ -1,19 +1,9 @@
 import { Router } from 'express';
-import { login } from '../controllers/auth';
+import { login, validarTokenUsuario } from '../controllers/auth';
 import { body, check } from 'express-validator';
 import { validarCampos, validarJWT } from '../middlewares';
-//import { putUsuario } from '../controllers/usuarios';
-//import { existeUsuarioId } from '../helpers';
-
 
 const router = Router();
-
-// router.put('/:id', [
-//     validarJWT,
-//     check('id', 'Envíe un ID válido').isMongoId(),
-//     check('id').custom( existeUsuarioId ),
-//     validarCampos
-// ], putUsuario );
 
 router.post('/login', [
     body('user')
@@ -26,5 +16,7 @@ router.post('/login', [
     ,
     validarCampos
 ], login);
+
+router.get('/', validarTokenUsuario);
 
 export default router;

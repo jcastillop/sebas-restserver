@@ -1,4 +1,4 @@
-import { HydratedDocument, Model, Schema, model } from "mongoose";
+import { HydratedDocument, Model, Schema } from "mongoose";
 import { IUpdateService } from ".";
 export interface IProducto{
     _id?: Schema.Types.ObjectId;
@@ -20,9 +20,9 @@ export interface IProductoMethods {
     //getProducto(): (id: Schema.Types.ObjectId) => Promise<{ hasError: boolean; producto: IProducto; }>;
 }
 export interface ProductoModel extends Model<IProducto, {}, IProductoMethods> {
-    saveProducto(producto: IProducto): Promise<HydratedDocument<IProducto, IProductoMethods>>;
-    getProducto(id: Schema.Types.ObjectId): Promise<HydratedDocument<IProducto, IProductoMethods>>;
-    getProductos(aplicacion: Schema.Types.ObjectId, empresa: Schema.Types.ObjectId, skip: number, limit: number, estado: boolean): Promise<HydratedDocument<IProducto[], IProductoMethods>>;
-    updateProducto(producto: IProducto): Promise<HydratedDocument<IProducto, IProductoMethods>>;
+    saveProducto(producto: IProducto): Promise<HydratedDocument<IProducto>>;
+    getProducto(id: Schema.Types.ObjectId): Promise<HydratedDocument<IProducto>>;
+    getProductos(aplicacion: Schema.Types.ObjectId, empresa: Schema.Types.ObjectId, skip: number, limit: number, estado: boolean): Promise<HydratedDocument<IProducto[]>>;
+    updateProducto(producto: IProducto): Promise<HydratedDocument<IProducto, IUpdateService>>;
     deleteProducto(id: Schema.Types.ObjectId): Promise<HydratedDocument<IUpdateService>>;
 }

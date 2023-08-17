@@ -47,3 +47,15 @@ export const login = async (req: Request, res: Response) => {
         })        
     }
 }
+
+export const validarTokenUsuario = async (req: Request, res: Response) => {
+
+    const { id } = req.body
+
+    const token = await generarJWT( id );
+
+    res.json({
+        usuario: id,
+        token: token,
+    })
+}

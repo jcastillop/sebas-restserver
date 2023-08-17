@@ -13,8 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-//const jwt = require('jsonwebtoken');
-const Usuario = require('../models/usuario');
+const models_1 = require("../models");
 const validarJWT = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const token = req.header('x-token');
     if (!token) {
@@ -24,9 +23,7 @@ const validarJWT = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
     }
     try {
         const decoded = jsonwebtoken_1.default.verify(token, process.env.SECRETORPRIVATEKEY || 'KEYNOTEXIST');
-        console.log("El codigo desencriptado: ");
-        console.log(decoded);
-        const usuario = yield Usuario.findById(decoded).populate('application', 'nombre');
+        const usuario = yield models_1.Usuario.getUsuario(decoded.uid);
         if (!usuario) {
             return res.status(401).json({
                 msg: 'Token no valido - usuario no existe en BD'
@@ -37,7 +34,6 @@ const validarJWT = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
                 msg: 'Token no valido - usuario inactivo'
             });
         }
-        //req.usuario =  usuario;
         next();
     }
     catch (error) {
