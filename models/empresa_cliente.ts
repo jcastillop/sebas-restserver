@@ -1,13 +1,7 @@
-import { Model, Schema, model } from "mongoose";
+import { Schema, model } from "mongoose";
+import { IEmpresaCliente, EmpresaClienteModel, IEmpresaClienteMethods } from "../interfaces";
 
-interface IEmpresaCliente {
-    empresa: Schema.Types.ObjectId;
-    cliente: Schema.Types.ObjectId;
-    descripcion: string;
-    estado: boolean;
-}
-
-const SupplierCustomerSchema = new Schema<IEmpresaCliente>({
+const EmpresaClienteSchema = new Schema<IEmpresaCliente, EmpresaClienteModel, IEmpresaClienteMethods>({
     empresa:{
         type: Schema.Types.ObjectId,
         ref:'Customer',
@@ -18,20 +12,53 @@ const SupplierCustomerSchema = new Schema<IEmpresaCliente>({
         ref:'Supplier',
         required: true
     },     
-    descripcion:{
-        type: String
-    },
     estado:{
         type: Boolean, 
         default: true
     },        
 })
 
-SupplierCustomerSchema.methods.toJSON = function () {
+EmpresaClienteSchema.index({ empresa: 1, cliente: 1 }, { unique: true })
+
+EmpresaClienteSchema.static('saveEmpresaCliente', function saveEmpresaCliente( empresa_cliente: IEmpresaCliente ) {
+    return this.create(empresa_cliente);
+});
+EmpresaClienteSchema.static('getEmpresaCliente', function getEmpresaCliente( empresa: Schema.Types.ObjectId, cliente: Schema.Types.ObjectId ) {
+    return this.findOne({ empresa, cliente });
+});
+EmpresaClienteSchema.static('getEmpresasClientes', function getEmpresasClientes( skip: number, limit: number, estado: boolean ) {
+
+    const parametros = { estado : estado }
+
+    return Promise.all([
+        this.countDocuments(parametros),
+        this.find(parametros)
+            .populate([{ path: 'empresa', strictPopulate: false }])    
+            .populate([{ path: 'cliente', strictPopulate: false }])    
+            .skip(Number(skip))
+            .limit(Number(limit))
+    ]); 
+
+});
+EmpresaClienteSchema.static('updateEmpresasClientes', function updateEmpresasClientes( empresa_cliente: IEmpresaCliente ) {
+    return this.updateOne(
+        { "_id": empresa_cliente._id}, 
+        { "$set": {
+            "empresa":          empresa_cliente.empresa, 
+            "cliente":          empresa_cliente.cliente
+            } 
+        }
+    )
+});
+EmpresaClienteSchema.static('deleteEmpresasClientes', function deleteEmpresasClientes( id: Schema.Types.ObjectId ) {
+    return this.updateOne({ "_id": id}, { "estado": false})
+});
+
+EmpresaClienteSchema.methods.toJSON = function () {
     //tiene que ser una funcion normal
     const {__v, _id, ...data} = this.toObject();
     data.uid = _id;
     return data;
 }
 
-export default model( 'SupplierCustomer', SupplierCustomerSchema)
+export default model<IEmpresaCliente, EmpresaClienteModel>( 'SupplierCustomer', EmpresaClienteSchema)

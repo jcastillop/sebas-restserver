@@ -1,19 +1,8 @@
-import { Model, Schema, model } from "mongoose";
-interface ICliente extends Document{
-    tipo_documento: Number;
-    numero_documento: string;
-    nombre_comercial: string;
-    razon_social: string;
-    ubigeo: string;
-    direccion: string;
-    estado: boolean;
-}
+import mongoose, { ClientSession, Schema, model } from "mongoose";
+import { ICliente, ClienteModel, IClienteMethods } from "../interfaces";
+import { Collection, Document } from "mongodb";
 
-interface IClienteMethods {
-    fullDescripcion(): string;
-}
-
-const ClienteSchema = new Schema<ICliente>({
+const ClienteSchema = new Schema<ICliente, ClienteModel, IClienteMethods>({
     tipo_documento:{
         type: Number,
         required: [true, 'El tipo de documento es obligatorio']
@@ -41,6 +30,42 @@ const ClienteSchema = new Schema<ICliente>({
     },        
 })
 
+ClienteSchema.static('saveCliente', async function saveCliente( cliente: ICliente, id_empresa: string ) {
+    return this.create(cliente);
+});
+ClienteSchema.static('getCliente', function getCliente( id: Schema.Types.ObjectId ) {
+    return this.findById(id);
+});
+ClienteSchema.static('getClientes', function getClientes( skip: number, limit: number, estado: boolean ) {
+
+    const parametros = { estado : estado }
+
+    return Promise.all([
+        this.countDocuments(parametros),
+        this.find(parametros)
+            .skip(Number(skip))
+            .limit(Number(limit))
+    ]); 
+
+});
+ClienteSchema.static('updateCliente', function updateCliente( cliente: ICliente ) {
+    return this.updateOne(
+        { "_id": cliente._id}, 
+        { "$set": {
+            "tipo_documento":   cliente.tipo_documento,
+            "numero_documento": cliente.numero_documento, 
+            "nombre_comercial": cliente.nombre_comercial,
+            "razon_social":     cliente.razon_social,
+            "ubigeo":           cliente.ubigeo, 
+            "direccion":        cliente.direccion
+            } 
+        }
+    )
+});
+ClienteSchema.static('deleteCliente', function deleteCliente( id: Schema.Types.ObjectId ) {
+    return this.updateOne({ "_id": id}, { "estado": false})
+});
+
 ClienteSchema.methods.toJSON = function () {
     //tiene que ser una funcion normal
     const {__v, _id, ...data} = this.toObject();
@@ -48,4 +73,4 @@ ClienteSchema.methods.toJSON = function () {
     return data;
 }
 
-export default model( 'Customer', ClienteSchema)
+export default model<ICliente, ClienteModel>( 'Customer', ClienteSchema)

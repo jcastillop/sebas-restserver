@@ -3,6 +3,7 @@ import { compareSync } from "bcrypt";
 
 import Usuario from "../models/usuario";
 import generarJWT from "../helpers/generar-jwt";
+import { Log4js } from "../helpers";
 
 export const login = async (req: Request, res: Response) => {
 
@@ -10,11 +11,14 @@ export const login = async (req: Request, res: Response) => {
 
     try {
         const usuario = await Usuario.findOne({ usuario: user })
-            .populate("rols")
-            .populate({
-                path : "applications",
-                populate: { path: 'suppliers' }
-            });
+            .populate("empresa")
+            .populate("aplicacion")
+            .populate("rol");        
+            // .populate("rols")
+            // .populate({
+            //     path : "applications",
+            //     populate: { path: 'suppliers' }
+            // });
 
         if(!usuario) {
             return res.status(400).json({
@@ -42,6 +46,7 @@ export const login = async (req: Request, res: Response) => {
             token
         })                    
     } catch (error) {
+        Log4js( error, 'error');
         return res.status(500).json({
             msg:'Hable con el administrador'
         })        

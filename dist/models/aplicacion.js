@@ -26,11 +26,30 @@ const AplicacionSchema = new mongoose_1.Schema({
         default: true
     },
 });
-AplicacionSchema.static('createAplicacion', function createAplicacion(nombre, descripcion) {
-    return this.create({ nombre, descripcion });
+AplicacionSchema.static('saveAplicacion', function saveAplicacion(aplicacion) {
+    return this.create(aplicacion);
 });
-AplicacionSchema.method('fullDescripcion', function fullDescripcion() {
-    return this.nombre + '|' + this.descripcion;
+AplicacionSchema.static('getAplicacion', function getAplicacion(id) {
+    return this.findById(id);
+});
+AplicacionSchema.static('getAplicaciones', function getAplicaciones(skip, limit, estado) {
+    const parametros = { estado: estado };
+    return Promise.all([
+        this.countDocuments(parametros),
+        this.find(parametros)
+            .skip(Number(skip))
+            .limit(Number(limit))
+    ]);
+});
+AplicacionSchema.static('updateAplicacion', function updateAplicacion(aplicacion) {
+    return this.updateOne({ "_id": aplicacion._id }, { "$set": {
+            "nombre": aplicacion.nombre,
+            "descripcion": aplicacion.descripcion
+        }
+    });
+});
+AplicacionSchema.static('deleteAplicacion', function deleteAplicacion(id) {
+    return this.updateOne({ "_id": id }, { "estado": false });
 });
 AplicacionSchema.methods.toJSON = function () {
     //tiene que ser una funcion normal

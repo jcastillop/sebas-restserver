@@ -37,7 +37,7 @@ export const usuarioNuevo = async (req: Request, res: Response) => {
         //log4js( error, 'error');
         res.status(404).json({
             messsage: `Error no identificado ${ error }`,
-            producto: null,
+            usuario: null,
             hasError:true
         });                 
     }
@@ -67,7 +67,7 @@ export const usuarioObtener = async (req: Request, res: Response) => {
         //log4js( error, 'error');
         res.status(404).json({
             messsage: `Error no identificado ${ error }`,
-            producto: null,
+            usuario: null,
             hasError:true
         });                 
     }
@@ -91,7 +91,7 @@ export const usuarioListar = async (req: Request, res: Response) => {
             res.json({
                 messsage: 'usuarioListar - Ocurrió un error durante la busqueda del Usuarios',
                 total: 0,
-                producto: null,
+                usuario: null,
                 hasError:true
             }); 
         }
@@ -101,13 +101,15 @@ export const usuarioListar = async (req: Request, res: Response) => {
         res.status(404).json({
             messsage: `Error no identificado ${ error }`,
             total: 0,
-            producto: null,
+            usuario: null,
             hasError:true
         });                 
     }
+    
 }
 
 export const usuarioActualizar = async (req: Request, res: Response) => {
+
     try {
 
         const { id, nombre, correo, rol, aplicacion, empresa} = req.body;
@@ -141,6 +143,7 @@ export const usuarioActualizar = async (req: Request, res: Response) => {
             hasError:false
         });                 
     }
+
 }
 
 export const usuarioEliminar = async (req: Request, res: Response) => {
@@ -151,12 +154,12 @@ export const usuarioEliminar = async (req: Request, res: Response) => {
 
         if(service.matchedCount == Constantes.MONGOOSE_UPDATE_SUCCESS){
             res.json({
-                messsage: 'usuarioEliminar - Producto eliminado',
+                messsage: 'usuarioEliminar - Usuario eliminado',
                 hasError:false
             }); 
         }else{
             res.json({
-                messsage: 'usuarioEliminar - Ocurrió un error durante la eliminacion del producto',
+                messsage: 'usuarioEliminar - Ocurrió un error durante la eliminacion del Usuario',
                 hasError:true
             }); 
         }         

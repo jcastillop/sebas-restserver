@@ -73,7 +73,7 @@ const usuarioObtener = (req, res) => __awaiter(void 0, void 0, void 0, function*
         //log4js( error, 'error');
         res.status(404).json({
             messsage: `Error no identificado ${error}`,
-            producto: null,
+            usuario: null,
             hasError: true
         });
     }
@@ -95,7 +95,7 @@ const usuarioListar = (req, res) => __awaiter(void 0, void 0, void 0, function* 
             res.json({
                 messsage: 'usuarioListar - Ocurrió un error durante la busqueda del Usuarios',
                 total: 0,
-                producto: null,
+                usuario: null,
                 hasError: true
             });
         }
@@ -105,7 +105,7 @@ const usuarioListar = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         res.status(404).json({
             messsage: `Error no identificado ${error}`,
             total: 0,
-            producto: null,
+            usuario: null,
             hasError: true
         });
     }
@@ -151,13 +151,13 @@ const usuarioEliminar = (req, res) => __awaiter(void 0, void 0, void 0, function
         const service = yield models_1.Usuario.deleteUsuario(id);
         if (service.matchedCount == helpers_1.Constantes.MONGOOSE_UPDATE_SUCCESS) {
             res.json({
-                messsage: 'usuarioEliminar - Producto eliminado',
+                messsage: 'usuarioEliminar - Usuario eliminado',
                 hasError: false
             });
         }
         else {
             res.json({
-                messsage: 'usuarioEliminar - Ocurrió un error durante la eliminacion del producto',
+                messsage: 'usuarioEliminar - Ocurrió un error durante la eliminacion del Usuario',
                 hasError: true
             });
         }

@@ -12,7 +12,7 @@ var __rest = (this && this.__rest) || function (s, e) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = require("mongoose");
-const SupplierCustomerSchema = new mongoose_1.Schema({
+const EmpresaClienteSchema = new mongoose_1.Schema({
     empresa: {
         type: mongoose_1.Schema.Types.ObjectId,
         ref: 'Customer',
@@ -23,19 +23,44 @@ const SupplierCustomerSchema = new mongoose_1.Schema({
         ref: 'Supplier',
         required: true
     },
-    descripcion: {
-        type: String
-    },
     estado: {
         type: Boolean,
         default: true
     },
 });
-SupplierCustomerSchema.methods.toJSON = function () {
+EmpresaClienteSchema.index({ empresa: 1, cliente: 1 }, { unique: true });
+EmpresaClienteSchema.static('saveEmpresaCliente', function saveEmpresaCliente(empresa_cliente) {
+    return this.create(empresa_cliente);
+});
+EmpresaClienteSchema.static('getEmpresaCliente', function getEmpresaCliente(empresa, cliente) {
+    return this.findOne({ empresa, cliente });
+});
+EmpresaClienteSchema.static('getEmpresasClientes', function getEmpresasClientes(skip, limit, estado) {
+    const parametros = { estado: estado };
+    return Promise.all([
+        this.countDocuments(parametros),
+        this.find(parametros)
+            .populate([{ path: 'empresa', strictPopulate: false }])
+            .populate([{ path: 'cliente', strictPopulate: false }])
+            .skip(Number(skip))
+            .limit(Number(limit))
+    ]);
+});
+EmpresaClienteSchema.static('updateEmpresasClientes', function updateEmpresasClientes(empresa_cliente) {
+    return this.updateOne({ "_id": empresa_cliente._id }, { "$set": {
+            "empresa": empresa_cliente.empresa,
+            "cliente": empresa_cliente.cliente
+        }
+    });
+});
+EmpresaClienteSchema.static('deleteEmpresasClientes', function deleteEmpresasClientes(id) {
+    return this.updateOne({ "_id": id }, { "estado": false });
+});
+EmpresaClienteSchema.methods.toJSON = function () {
     //tiene que ser una funcion normal
     const _a = this.toObject(), { __v, _id } = _a, data = __rest(_a, ["__v", "_id"]);
     data.uid = _id;
     return data;
 };
-exports.default = (0, mongoose_1.model)('SupplierCustomer', SupplierCustomerSchema);
+exports.default = (0, mongoose_1.model)('SupplierCustomer', EmpresaClienteSchema);
 //# sourceMappingURL=empresa_cliente.js.map

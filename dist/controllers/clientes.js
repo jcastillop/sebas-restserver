@@ -9,18 +9,37 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.clienteActualizar = exports.clienteListar = exports.clienteNuevo = void 0;
+exports.clienteEliminar = exports.clienteActualizar = exports.clienteListar = exports.clienteObtener = exports.clienteNuevo = void 0;
 const models_1 = require("../models");
+const helpers_1 = require("../helpers");
 const clienteNuevo = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { tipo_documento, numero_documento, nombre_comercial, razon_social, ubigeo, direccion } = req.body;
-        const clienteSaved = new models_1.Cliente({ tipo_documento, numero_documento, nombre_comercial, razon_social, ubigeo, direccion });
+        const { id_empresa, tipo_documento, numero_documento, nombre_comercial, razon_social, ubigeo, direccion } = req.body;
+        const cliente = {
+            tipo_documento, numero_documento, nombre_comercial, razon_social, ubigeo, direccion
+        };
+        const clienteSaved = yield models_1.Cliente.saveCliente(cliente);
         if (clienteSaved) {
-            res.json({
-                messsage: 'clienteNuevo - Cliente almacenado correctamente',
-                cliente: clienteSaved,
-                hasError: false
-            });
+            //clienteSaved.id
+            const empresa_cliente = {
+                empresa: id_empresa,
+                cliente: clienteSaved.id,
+            };
+            const empresaClienteSaved = yield models_1.EmpresaCliente.saveEmpresaCliente(empresa_cliente);
+            if (empresaClienteSaved) {
+                res.json({
+                    messsage: 'clienteNuevo - Cliente almacenado correctamente',
+                    cliente: clienteSaved,
+                    hasError: false
+                });
+            }
+            else {
+                res.json({
+                    messsage: 'EmpresaClienteNuevo - Ocurrió un error durante la creación de la EmpresaCliente',
+                    cliente: clienteSaved,
+                    hasError: false
+                });
+            }
         }
         else {
             res.json({
@@ -40,48 +59,20 @@ const clienteNuevo = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     }
 });
 exports.clienteNuevo = clienteNuevo;
-const clienteListar = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const clienteObtener = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { limite = 10, desde = 0 } = req.query;
-        const { empresa } = req.body;
-        var parametros = {};
-        parametros = { estado: true };
-        if (empresa) {
-            parametros = { estado: true, empresa: empresa };
-        }
-        const [total, clientes] = yield Promise.all([
-            models_1.Cliente.countDocuments(parametros),
-            models_1.Cliente.find(parametros)
-                .skip(Number(desde))
-                .limit(Number(limite))
-        ]);
-        res.json({
-            total,
-            clientes
-        });
-    }
-    catch (error) {
-        res.status(404).json({
-            messsage: `Error no identificado ${error}`,
-            hasError: true
-        });
-    }
-});
-exports.clienteListar = clienteListar;
-const clienteActualizar = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const { tipo_documento, numero_documento, nombre_comercial, razon_social, ubigeo, direccion } = req.body;
-        const clienteSaved = new models_1.Cliente({ tipo_documento, numero_documento, nombre_comercial, razon_social, ubigeo, direccion });
-        if (clienteSaved) {
+        const { id } = req.body;
+        const cliente = yield models_1.Cliente.getCliente(id);
+        if (cliente) {
             res.json({
-                messsage: 'clienteNuevo - Cliente almacenado correctamente',
-                cliente: clienteSaved,
+                messsage: 'clienteObtener - Cliente encontrado',
+                cliente: cliente,
                 hasError: false
             });
         }
         else {
             res.json({
-                messsage: 'clienteNuevo - Ocurrió un error durante la creación del cliente',
+                messsage: 'clienteObtener - Ocurrió un error durante la busqueda del Cliente',
                 cliente: null,
                 hasError: true
             });
@@ -96,5 +87,90 @@ const clienteActualizar = (req, res) => __awaiter(void 0, void 0, void 0, functi
         });
     }
 });
+exports.clienteObtener = clienteObtener;
+const clienteListar = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { estado = true, limite = 10, desde = 0 } = req.body;
+        const [total, cliente] = yield models_1.Cliente.getClientes(desde, limite, estado);
+        if (cliente) {
+            res.json({
+                messsage: 'clienteListar - Clientes encontrados',
+                total: total,
+                cliente: cliente,
+                hasError: false
+            });
+        }
+        else {
+            res.json({
+                messsage: 'clienteListar - Ocurrió un error durante la busqueda de Clientes',
+                total: 0,
+                cliente: null,
+                hasError: true
+            });
+        }
+    }
+    catch (error) {
+        res.status(404).json({
+            messsage: `Error no identificado ${error}`,
+            hasError: true
+        });
+    }
+});
+exports.clienteListar = clienteListar;
+const clienteActualizar = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { id, tipo_documento, numero_documento, nombre_comercial, razon_social, ubigeo, direccion } = req.body;
+        const cliente = {
+            _id: id, tipo_documento, numero_documento, nombre_comercial, razon_social, ubigeo, direccion
+        };
+        const service = yield models_1.Cliente.updateCliente(cliente);
+        if (service.matchedCount == helpers_1.Constantes.MONGOOSE_UPDATE_SUCCESS) {
+            res.json({
+                messsage: 'clienteActualizar - Cliente actualizado',
+                hasError: false
+            });
+        }
+        else {
+            res.json({
+                messsage: 'clienteActualizar - Ocurrió un error durante la actualizacion del Cliente',
+                hasError: true
+            });
+        }
+    }
+    catch (error) {
+        //log4js( error, 'error');
+        res.status(404).json({
+            messsage: `Error no identificado ${error}`,
+            cliente: null,
+            hasError: true
+        });
+    }
+});
 exports.clienteActualizar = clienteActualizar;
+const clienteEliminar = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { id } = req.body;
+        const service = yield models_1.Cliente.deleteCliente(id);
+        if (service.matchedCount == helpers_1.Constantes.MONGOOSE_UPDATE_SUCCESS) {
+            res.json({
+                messsage: 'clienteEliminar - Cliente eliminado',
+                hasError: false
+            });
+        }
+        else {
+            res.json({
+                messsage: 'clienteEliminar - Ocurrió un error durante la eliminacion del Cliente',
+                hasError: true
+            });
+        }
+    }
+    catch (error) {
+        //log4js( error, 'error');
+        res.status(404).json({
+            messsage: `Error no identificado ${error}`,
+            hasError: true
+        });
+    }
+});
+exports.clienteEliminar = clienteEliminar;
 //# sourceMappingURL=clientes.js.map

@@ -31,6 +31,36 @@ const AplicacionEmpresaSchema = new mongoose_1.Schema({
         default: true
     },
 });
+AplicacionEmpresaSchema.index({ aplicacion: 1, empresa: 1 }, { unique: true });
+AplicacionEmpresaSchema.static('saveAplicacionEmpresa', function saveAplicacionEmpresa(aplicacion_empresa) {
+    return this.create(aplicacion_empresa);
+});
+AplicacionEmpresaSchema.static('getAplicacionEmpresa', function getAplicacionEmpresa(aplicacion, empresa) {
+    return this.findOne({ aplicacion, empresa });
+});
+AplicacionEmpresaSchema.static('getAplicacionesEmpresas', function getAplicacionesEmpresas(skip, limit, estado) {
+    const parametros = { estado: estado };
+    return Promise.all([
+        this.countDocuments(parametros),
+        this.find(parametros)
+            //.populate([{ path: 'empresa', strictPopulate: false, select: 'nombre_comercial razon_social' }])
+            .populate([{ path: 'empresa', strictPopulate: false }])
+            .populate([{ path: 'aplicacion', strictPopulate: false }])
+            .skip(Number(skip))
+            .limit(Number(limit))
+    ]);
+});
+AplicacionEmpresaSchema.static('updateAplicacionEmpresa', function updateAplicacionEmpresa(aplicacion_empresa) {
+    return this.updateOne({ "_id": aplicacion_empresa._id }, { "$set": {
+            "empresa": aplicacion_empresa.empresa,
+            "aplicacion": aplicacion_empresa.aplicacion,
+            "descripcion": aplicacion_empresa.descripcion
+        }
+    });
+});
+AplicacionEmpresaSchema.static('deleteAplicacionEmpresa', function deleteAplicacionEmpresa(id) {
+    return this.updateOne({ "_id": id }, { "estado": false });
+});
 AplicacionEmpresaSchema.methods.toJSON = function () {
     //tiene que ser una funcion normal
     const _a = this.toObject(), { __v, _id } = _a, data = __rest(_a, ["__v", "_id"]);

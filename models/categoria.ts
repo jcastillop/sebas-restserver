@@ -40,4 +40,4 @@ CategoriaSchema.methods.toJSON = function () {
     return data;
 }
 
-export default model( 'Categoria', CategoriaSchema)
+export default model( 'Categorie', CategoriaSchema)

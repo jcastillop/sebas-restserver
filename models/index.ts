@@ -6,6 +6,7 @@ export { default as Empresa } from './empresa';
 export { default as EmpresaCliente } from './empresa_cliente';
 export { default as Producto } from './producto';
 export { default as Rol } from './rol';
+export { default as ServicioProducto } from './servicio_producto';
 export { default as Servicio } from './servicio';
 export { default as Usuario } from './usuario';
 

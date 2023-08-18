@@ -1,16 +1,5 @@
 import { HydratedDocument, Model, Schema, model } from "mongoose";
-
-interface IAplicacion {
-    nombre: string;
-    descripcion: string;
-    estado: boolean;
-}
-interface IAplicacionMethods {
-    fullDescripcion(): string;
-}
-interface AplicacionModel extends Model<IAplicacion, {}, IAplicacionMethods> {
-    createAplicacion(nombre: string, descripcion: string): Promise<HydratedDocument<IAplicacion, IAplicacionMethods>>;
-}
+import { AplicacionModel, IAplicacion, IAplicacionMethods } from "../interfaces";
 
 const AplicacionSchema = new Schema<IAplicacion, AplicacionModel, IAplicacionMethods>({
     nombre:{
@@ -27,13 +16,37 @@ const AplicacionSchema = new Schema<IAplicacion, AplicacionModel, IAplicacionMet
     },        
 })
 
-AplicacionSchema.static('createAplicacion', function createAplicacion(nombre: string, descripcion: string) {
-    return this.create({ nombre, descripcion });
+AplicacionSchema.static('saveAplicacion', function saveAplicacion( aplicacion: IAplicacion ) {
+    return this.create(aplicacion);
 });
+AplicacionSchema.static('getAplicacion', function getAplicacion( id: Schema.Types.ObjectId ) {
+    return this.findById(id);
+});
+AplicacionSchema.static('getAplicaciones', function getAplicaciones( skip: number, limit: number, estado: boolean ) {
 
-AplicacionSchema.method('fullDescripcion', function fullDescripcion(): string {
-    return this.nombre + '|' + this.descripcion;
-  });
+    const parametros = { estado : estado }
+
+    return Promise.all([
+        this.countDocuments(parametros),
+        this.find(parametros)
+            .skip(Number(skip))
+            .limit(Number(limit))
+    ]); 
+
+});
+AplicacionSchema.static('updateAplicacion', function updateAplicacion( aplicacion: IAplicacion ) {
+    return this.updateOne(
+        { "_id": aplicacion._id}, 
+        { "$set": {
+            "nombre":           aplicacion.nombre,
+            "descripcion":      aplicacion.descripcion
+            } 
+        }
+    )
+});
+AplicacionSchema.static('deleteAplicacion', function deleteAplicacion( id: Schema.Types.ObjectId ) {
+    return this.updateOne({ "_id": id}, { "estado": false})
+});
 
 AplicacionSchema.methods.toJSON = function () {
     //tiene que ser una funcion normal
@@ -42,4 +55,4 @@ AplicacionSchema.methods.toJSON = function () {
     return data;
 }
 
-export default model( 'Application', AplicacionSchema)
+export default model<IAplicacion, AplicacionModel>( 'Application', AplicacionSchema)

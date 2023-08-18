@@ -17,26 +17,26 @@ const ServicioSchema = new mongoose_1.Schema({
         type: String,
         required: [true, 'El codigo del servicio es obligatorio']
     },
+    nombre: {
+        type: String,
+        required: [true, 'El nombre del servicio es obligatorio']
+    },
     descripcion: {
         type: String
+    },
+    aplicacion: {
+        type: mongoose_1.Schema.Types.ObjectId,
+        ref: 'Supplier',
+        required: true
     },
     empresa: {
         type: mongoose_1.Schema.Types.ObjectId,
         ref: 'Supplier',
         required: true
     },
-    aplicacion: {
-        type: mongoose_1.Schema.Types.ObjectId,
-        ref: 'Application',
-        required: true
-    },
     estado: {
         type: Boolean,
         default: true
-    },
-    nombre: {
-        type: String,
-        required: [true, 'El nombre del servicio es obligatorio']
     },
     productos: [{
             type: mongoose_1.Schema.Types.ObjectId,
@@ -44,11 +44,39 @@ const ServicioSchema = new mongoose_1.Schema({
             required: true
         }],
 });
+ServicioSchema.static('saveServicio', function saveServicio(servicio) {
+    return this.create(servicio);
+});
+ServicioSchema.static('getServicio', function getServicio(id) {
+    return this.findById(id);
+});
+ServicioSchema.static('getServicios', function getServicios(skip, limit, estado) {
+    const parametros = { estado: estado };
+    return Promise.all([
+        this.countDocuments(parametros),
+        this.find(parametros)
+            .skip(Number(skip))
+            .limit(Number(limit))
+    ]);
+});
+ServicioSchema.static('updateServicio', function updateServicio(servicio) {
+    return this.updateOne({ "_id": servicio._id }, { "$set": {
+            "codigo": servicio.codigo,
+            "nombre": servicio.nombre,
+            "descripcion": servicio.descripcion,
+            "aplicacion": servicio.aplicacion,
+            "empresa": servicio.empresa
+        }
+    });
+});
+ServicioSchema.static('deleteServicio', function deleteServicio(id) {
+    return this.updateOne({ "_id": id }, { "estado": false });
+});
 ServicioSchema.methods.toJSON = function () {
     //tiene que ser una funcion normal
     const _a = this.toObject(), { __v, _id } = _a, data = __rest(_a, ["__v", "_id"]);
     data.uid = _id;
     return data;
 };
-exports.default = (0, mongoose_1.model)('Servicio', ServicioSchema);
+exports.default = (0, mongoose_1.model)('Service', ServicioSchema);
 //# sourceMappingURL=servicio.js.map

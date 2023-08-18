@@ -23,7 +23,8 @@ const EmpresaSchema = new mongoose_1.Schema({
     },
     ruc: {
         type: String,
-        required: [true, 'El RUC de la empresa es obligatorio']
+        required: [true, 'El RUC de la empresa es obligatorio'],
+        unique: true
     },
     ubigeo: {
         type: String
@@ -35,6 +36,34 @@ const EmpresaSchema = new mongoose_1.Schema({
         type: Boolean,
         default: true
     },
+});
+EmpresaSchema.static('saveEmpresa', function saveEmpresa(empresa) {
+    return this.create(empresa);
+});
+EmpresaSchema.static('getEmpresa', function getEmpresa(id) {
+    return this.findById(id);
+});
+EmpresaSchema.static('getEmpresas', function getEmpresas(skip, limit, estado) {
+    const parametros = { estado: estado };
+    return Promise.all([
+        this.countDocuments(parametros),
+        this.find(parametros)
+            .skip(Number(skip))
+            .limit(Number(limit))
+    ]);
+});
+EmpresaSchema.static('updateEmpresa', function updateEmpresa(empresa) {
+    return this.updateOne({ "_id": empresa._id }, { "$set": {
+            "nombre_comercial": empresa.nombre_comercial,
+            "razon_social": empresa.razon_social,
+            "ruc": empresa.ruc,
+            "ubigeo": empresa.ubigeo,
+            "direccion": empresa.direccion
+        }
+    });
+});
+EmpresaSchema.static('deleteEmpresa', function deleteEmpresa(id) {
+    return this.updateOne({ "_id": id }, { "estado": false });
 });
 EmpresaSchema.methods.toJSON = function () {
     //tiene que ser una funcion normal

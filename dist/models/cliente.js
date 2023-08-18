@@ -1,4 +1,13 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __rest = (this && this.__rest) || function (s, e) {
     var t = {};
     for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
@@ -38,6 +47,37 @@ const ClienteSchema = new mongoose_1.Schema({
         type: Boolean,
         default: true
     },
+});
+ClienteSchema.static('saveCliente', function saveCliente(cliente, id_empresa) {
+    return __awaiter(this, void 0, void 0, function* () {
+        return this.create(cliente);
+    });
+});
+ClienteSchema.static('getCliente', function getCliente(id) {
+    return this.findById(id);
+});
+ClienteSchema.static('getClientes', function getClientes(skip, limit, estado) {
+    const parametros = { estado: estado };
+    return Promise.all([
+        this.countDocuments(parametros),
+        this.find(parametros)
+            .skip(Number(skip))
+            .limit(Number(limit))
+    ]);
+});
+ClienteSchema.static('updateCliente', function updateCliente(cliente) {
+    return this.updateOne({ "_id": cliente._id }, { "$set": {
+            "tipo_documento": cliente.tipo_documento,
+            "numero_documento": cliente.numero_documento,
+            "nombre_comercial": cliente.nombre_comercial,
+            "razon_social": cliente.razon_social,
+            "ubigeo": cliente.ubigeo,
+            "direccion": cliente.direccion
+        }
+    });
+});
+ClienteSchema.static('deleteCliente', function deleteCliente(id) {
+    return this.updateOne({ "_id": id }, { "estado": false });
 });
 ClienteSchema.methods.toJSON = function () {
     //tiene que ser una funcion normal

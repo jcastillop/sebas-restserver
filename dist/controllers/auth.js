@@ -16,15 +16,19 @@ exports.validarTokenUsuario = exports.login = void 0;
 const bcrypt_1 = require("bcrypt");
 const usuario_1 = __importDefault(require("../models/usuario"));
 const generar_jwt_1 = __importDefault(require("../helpers/generar-jwt"));
+const helpers_1 = require("../helpers");
 const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { user, password } = req.body;
     try {
         const usuario = yield usuario_1.default.findOne({ usuario: user })
-            .populate("rols")
-            .populate({
-            path: "applications",
-            populate: { path: 'suppliers' }
-        });
+            .populate("empresa")
+            .populate("aplicacion")
+            .populate("rol");
+        // .populate("rols")
+        // .populate({
+        //     path : "applications",
+        //     populate: { path: 'suppliers' }
+        // });
         if (!usuario) {
             return res.status(400).json({
                 msg: 'Usuario / password no son correctos - usuario no existe'
@@ -51,6 +55,7 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         });
     }
     catch (error) {
+        (0, helpers_1.Log4js)(error, 'error');
         return res.status(500).json({
             msg: 'Hable con el administrador'
         });

@@ -42,5 +42,5 @@ CategoriaSchema.methods.toJSON = function () {
     data.uid = _id;
     return data;
 };
-exports.default = (0, mongoose_1.model)('Categoria', CategoriaSchema);
+exports.default = (0, mongoose_1.model)('Categorie', CategoriaSchema);
 //# sourceMappingURL=categoria.js.map

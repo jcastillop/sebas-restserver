@@ -1,7 +1,7 @@
 import { Schema, model } from "mongoose";
-import { IProducto, ProductoModel } from "../interfaces";
+import { IProducto, ProductoModel, IProductoMethods } from "../interfaces";
 
-const ProductoSchema = new Schema<IProducto>({
+const ProductoSchema = new Schema<IProducto, ProductoModel, IProductoMethods>({
     nombre:{
         type: String,
         required: [true, 'El nombre de la categoria es obligatorio']
@@ -18,7 +18,7 @@ const ProductoSchema = new Schema<IProducto>({
     },     
     categoria:{
         type: Schema.Types.ObjectId,
-        ref:'Categoria',
+        ref:'Categorie',
         required: true
     },   
     codigo:{
@@ -52,6 +52,7 @@ const ProductoSchema = new Schema<IProducto>({
         default: 0
     },
 })
+
 ProductoSchema.static('saveProducto', function saveProducto( producto: IProducto ) {
     return this.create(producto);
 });
@@ -60,7 +61,7 @@ ProductoSchema.static('getProducto', function getProducto( id: Schema.Types.Obje
 });
 ProductoSchema.static('getProductos', function getProductos( aplicacion: Schema.Types.ObjectId, empresa: Schema.Types.ObjectId, skip: number, limit: number, estado: boolean ) {
 
-    const parametros = { estado : true, empresa: empresa, aplicacion: aplicacion }
+    const parametros = { estado : estado, empresa: empresa, aplicacion: aplicacion }
 
     return Promise.all([
         this.countDocuments(parametros),
@@ -104,4 +105,4 @@ ProductoSchema.methods.toJSON = function () {
     return data;
 }
 
-export default model<IProducto, ProductoModel>( 'Producto', ProductoSchema)
+export default model<IProducto, ProductoModel>( 'Product', ProductoSchema)

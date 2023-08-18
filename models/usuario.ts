@@ -104,4 +104,4 @@ UsuarioSchema.methods.toJSON = function () {
     return data;
 }
 
-export default model<IUsuario, UsuarioModel>('Usuario', UsuarioSchema);
+export default model<IUsuario, UsuarioModel>('User', UsuarioSchema);

@@ -29,7 +29,7 @@ const ProductoSchema = new mongoose_1.Schema({
     },
     categoria: {
         type: mongoose_1.Schema.Types.ObjectId,
-        ref: 'Categoria',
+        ref: 'Categorie',
         required: true
     },
     codigo: {
@@ -70,7 +70,7 @@ ProductoSchema.static('getProducto', function getProducto(id) {
     return this.findById(id);
 });
 ProductoSchema.static('getProductos', function getProductos(aplicacion, empresa, skip, limit, estado) {
-    const parametros = { estado: true, empresa: empresa, aplicacion: aplicacion };
+    const parametros = { estado: estado, empresa: empresa, aplicacion: aplicacion };
     return Promise.all([
         this.countDocuments(parametros),
         this.find(parametros)
@@ -107,5 +107,5 @@ ProductoSchema.methods.toJSON = function () {
     data.uid = _id;
     return data;
 };
-exports.default = (0, mongoose_1.model)('Producto', ProductoSchema);
+exports.default = (0, mongoose_1.model)('Product', ProductoSchema);
 //# sourceMappingURL=producto.js.map

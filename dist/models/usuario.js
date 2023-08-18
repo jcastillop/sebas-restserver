@@ -108,5 +108,5 @@ UsuarioSchema.methods.toJSON = function () {
     data.uid = _id;
     return data;
 };
-exports.default = (0, mongoose_1.model)('Usuario', UsuarioSchema);
+exports.default = (0, mongoose_1.model)('User', UsuarioSchema);
 //# sourceMappingURL=usuario.js.map
