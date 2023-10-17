@@ -44,7 +44,7 @@ const usuarioNuevo = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         //log4js( error, 'error');
         res.status(404).json({
             messsage: `Error no identificado ${error}`,
-            producto: null,
+            usuario: null,
             hasError: true
         });
     }
@@ -80,6 +80,7 @@ const usuarioObtener = (req, res) => __awaiter(void 0, void 0, void 0, function*
 });
 exports.usuarioObtener = usuarioObtener;
 const usuarioListar = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log("usuario listar");
     try {
         const { empresa, aplicacion, estado = true, limite = 5, desde = 0 } = req.body;
         const [total, usuario] = yield models_1.Usuario.getUsuarios(aplicacion, empresa, desde, limite, estado);

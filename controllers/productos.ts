@@ -1,7 +1,8 @@
 import { Request, Response } from "express";
 import { Producto } from "../models";
 import { IProducto, IUpdateService } from "../interfaces";
-import { Constantes } from "../helpers";
+import { Constantes, appVars } from "../helpers";
+import { mongooseId } from "../helpers/mongoose";
 
 export const productoNuevo = async (req: Request, res: Response) => {
     try {
@@ -94,6 +95,43 @@ export const productoListar = async (req: Request, res: Response) => {
         }else{
             res.json({
                 messsage: 'productoListar - Ocurrió un error durante la busqueda del productos',
+                total: 0,
+                producto: null,
+                hasError:true
+            }); 
+        }
+       
+    } catch (error) {
+        //log4js( error, 'error');
+        res.status(404).json({
+            messsage: `Error no identificado ${ error }`,
+            total: 0,
+            producto: null,
+            hasError:true
+        });                 
+    }
+}
+
+export const productoListarCalientito = async (req: Request, res: Response) => {
+
+    try {
+
+        const { estado = true, limite = 5, desde = 0 } = req.body;
+
+        const categoria = req.query.categoria as string;
+
+        const [total, producto] = await Producto.getProductosCalientito(appVars.aplicacion, appVars.empresa, categoria, desde, limite, estado);
+
+        if(producto){
+            res.json({
+                messsage: 'productoListarAcequitos - Productos encontrados',
+                total: total,
+                producto: producto,
+                hasError:false
+            }); 
+        }else{
+            res.json({
+                messsage: 'productoListarAcequitos - Ocurrió un error durante la busqueda del productos',
                 total: 0,
                 producto: null,
                 hasError:true

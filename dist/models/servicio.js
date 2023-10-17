@@ -37,12 +37,7 @@ const ServicioSchema = new mongoose_1.Schema({
     estado: {
         type: Boolean,
         default: true
-    },
-    productos: [{
-            type: mongoose_1.Schema.Types.ObjectId,
-            ref: 'Categoria',
-            required: true
-        }],
+    }
 });
 ServicioSchema.static('saveServicio', function saveServicio(servicio) {
     return this.create(servicio);

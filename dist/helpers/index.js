@@ -17,10 +17,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Log4js = exports.Constantes = void 0;
+exports.Log4js = exports.appVars = exports.Constantes = void 0;
 __exportStar(require("./db-validators"), exports);
 var constantes_1 = require("./constantes");
 Object.defineProperty(exports, "Constantes", { enumerable: true, get: function () { return __importDefault(constantes_1).default; } });
+var variables_1 = require("./variables");
+Object.defineProperty(exports, "appVars", { enumerable: true, get: function () { return __importDefault(variables_1).default; } });
 __exportStar(require("./generar-jwt"), exports);
 var log4js_1 = require("./log4js");
 Object.defineProperty(exports, "Log4js", { enumerable: true, get: function () { return __importDefault(log4js_1).default; } });

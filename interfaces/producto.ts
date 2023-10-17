@@ -23,6 +23,7 @@ export interface ProductoModel extends Model<IProducto, {}, IProductoMethods> {
     saveProducto(producto: IProducto): Promise<HydratedDocument<IProducto>>;
     getProducto(id: Schema.Types.ObjectId): Promise<HydratedDocument<IProducto>>;
     getProductos(aplicacion: Schema.Types.ObjectId, empresa: Schema.Types.ObjectId, skip: number, limit: number, estado: boolean): Promise<HydratedDocument<IProducto[]>>;
+    getProductosCalientito(aplicacion: Schema.Types.ObjectId, empresa: Schema.Types.ObjectId, categoria: string, skip: number, limit: number, estado: boolean): Promise<HydratedDocument<IProducto[]>>;
     updateProducto(producto: IProducto): Promise<HydratedDocument<IProducto, IUpdateService>>;
     deleteProducto(id: Schema.Types.ObjectId): Promise<HydratedDocument<IUpdateService>>;
 }

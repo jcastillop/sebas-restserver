@@ -17,6 +17,10 @@ const CategoriaSchema = new mongoose_1.Schema({
         type: String,
         required: [true, 'El nombre de la categoria es obligatorio']
     },
+    codigo: {
+        type: String,
+        required: [true, 'El nombre de la categoria es obligatorio']
+    },
     descripcion: {
         type: String,
         required: [true, 'La descripcion de la categoria es obligatoria']

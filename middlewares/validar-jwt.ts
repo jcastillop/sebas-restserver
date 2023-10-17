@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import jwt, { Secret, JwtPayload } from 'jsonwebtoken';
 import { Usuario } from "../models";
+import { appVars } from "../helpers";
 //const jwt = require('jsonwebtoken');
 
 declare module "jsonwebtoken" {
@@ -22,7 +23,7 @@ const validarJWT = async (req: Request, res: Response, next: NextFunction) => {
         const decoded  = <jwt.JwtPayload>jwt.verify(token, process.env.SECRETORPRIVATEKEY || 'KEYNOTEXIST');
         
         const usuario = await Usuario.getUsuario(decoded.uid)
-    
+
         if( !usuario ){
             return res.status(401).json({
                 msg: 'Token no valido - usuario no existe en BD'
@@ -35,6 +36,9 @@ const validarJWT = async (req: Request, res: Response, next: NextFunction) => {
                 msg: 'Token no valido - usuario inactivo'
             })
         }
+
+        appVars.aplicacion = usuario.aplicacion;
+        appVars.empresa = usuario.empresa;
         next();
         
     } catch (error) {
@@ -45,7 +49,6 @@ const validarJWT = async (req: Request, res: Response, next: NextFunction) => {
         
     }
 
-    console.log(token);
 }
 
 export default validarJWT;

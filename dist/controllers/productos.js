@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.productoEliminar = exports.productoActualizar = exports.productoListar = exports.productoObtener = exports.productoNuevo = void 0;
+exports.productoEliminar = exports.productoActualizar = exports.productoListarCalientito = exports.productoListar = exports.productoObtener = exports.productoNuevo = void 0;
 const models_1 = require("../models");
 const helpers_1 = require("../helpers");
 const productoNuevo = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -115,6 +115,39 @@ const productoListar = (req, res) => __awaiter(void 0, void 0, void 0, function*
     }
 });
 exports.productoListar = productoListar;
+const productoListarCalientito = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { estado = true, limite = 5, desde = 0 } = req.body;
+        const categoria = req.query.categoria;
+        const [total, producto] = yield models_1.Producto.getProductosCalientito(helpers_1.appVars.aplicacion, helpers_1.appVars.empresa, categoria, desde, limite, estado);
+        if (producto) {
+            res.json({
+                messsage: 'productoListarAcequitos - Productos encontrados',
+                total: total,
+                producto: producto,
+                hasError: false
+            });
+        }
+        else {
+            res.json({
+                messsage: 'productoListarAcequitos - Ocurrió un error durante la busqueda del productos',
+                total: 0,
+                producto: null,
+                hasError: true
+            });
+        }
+    }
+    catch (error) {
+        //log4js( error, 'error');
+        res.status(404).json({
+            messsage: `Error no identificado ${error}`,
+            total: 0,
+            producto: null,
+            hasError: true
+        });
+    }
+});
+exports.productoListarCalientito = productoListarCalientito;
 const productoActualizar = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { id, nombre, empresa, aplicacion, categoria, codigo, codigo_sunat, descuento, descripcion, precio_unitario, unidad_medida, valor_unitario } = req.body;

@@ -2,6 +2,7 @@ import { Model, Schema, model } from "mongoose";
 
 interface ICategoria extends Document{
     nombre: string;
+    codigo: string;
     descripcion: string;
     empresa: Schema.Types.ObjectId;
     aplicacion: Schema.Types.ObjectId;
@@ -13,6 +14,10 @@ const CategoriaSchema = new Schema<ICategoria>({
         type: String,
         required: [true, 'El nombre de la categoria es obligatorio']
     },
+    codigo:{
+        type: String,
+        required: [true, 'El nombre de la categoria es obligatorio']
+    },    
     descripcion:{
         type: String,
         required: [true, 'La descripcion de la categoria es obligatoria']

@@ -35,16 +35,17 @@ const existeUsuarioId = (id) => __awaiter(void 0, void 0, void 0, function* () {
 exports.existeUsuarioId = existeUsuarioId;
 const existeCodigoProducto = (codigo, empresa, aplicacion) => __awaiter(void 0, void 0, void 0, function* () {
     console.log(empresa, aplicacion);
-    const existeProducto = yield models_1.Usuario.find({ codigo, empresa, aplicacion });
-    if (existeProducto) {
+    const existeProducto = yield models_1.Producto.find({ codigo, empresa, aplicacion });
+    if (existeProducto.length > 0) {
         throw new Error(`El codigo ${codigo} de producto ya existe`);
     }
 });
 exports.existeCodigoProducto = existeCodigoProducto;
 const existeNombreProducto = (nombre, empresa, aplicacion) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log(empresa, aplicacion);
-    const existeProducto = yield models_1.Usuario.find({ nombre, empresa, aplicacion });
-    if (existeProducto) {
+    const existeProducto = yield models_1.Producto.find({ nombre, empresa, aplicacion });
+    console.log(nombre);
+    console.log(existeProducto);
+    if (existeProducto.length > 0) {
         throw new Error(`El nombre ${nombre} de producto ya existe`);
     }
 });

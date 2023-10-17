@@ -75,6 +75,22 @@ ProductoSchema.static('getProductos', function getProductos( aplicacion: Schema.
     ]); 
 
 });
+ProductoSchema.static('getProductosCalientito', function getProductosCalientito( aplicacion: Schema.Types.ObjectId, empresa: Schema.Types.ObjectId, categoria: string, skip: number, limit: number, estado: boolean ) {
+
+    const parametros = { estado : estado, empresa: empresa, aplicacion: aplicacion }
+
+    return Promise.all([
+        this.countDocuments(parametros),
+        this.find(parametros)
+            //.populate([{ path: 'empresa', strictPopulate: false, select: 'nombre_comercial razon_social' }])
+            .populate([{ path: 'empresa', strictPopulate: false }])    
+            .populate([{ path: 'aplicacion', strictPopulate: false }])    
+            .populate({ path: 'categoria', strictPopulate: false, match: { codigo: { $eq: categoria }} })   
+            .skip(Number(skip))
+            .limit(Number(limit)).then((productos: any)=>productos.filter(((productos: { categoria: null; })=>productos.categoria  !=null )))
+    ]); 
+
+});
 ProductoSchema.static('updateProducto', function updateProducto( producto: IProducto ) {
     return this.updateOne(
         { "_id": producto._id}, 

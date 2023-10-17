@@ -82,6 +82,19 @@ ProductoSchema.static('getProductos', function getProductos(aplicacion, empresa,
             .limit(Number(limit))
     ]);
 });
+ProductoSchema.static('getProductosCalientito', function getProductosCalientito(aplicacion, empresa, categoria, skip, limit, estado) {
+    const parametros = { estado: estado, empresa: empresa, aplicacion: aplicacion };
+    return Promise.all([
+        this.countDocuments(parametros),
+        this.find(parametros)
+            //.populate([{ path: 'empresa', strictPopulate: false, select: 'nombre_comercial razon_social' }])
+            .populate([{ path: 'empresa', strictPopulate: false }])
+            .populate([{ path: 'aplicacion', strictPopulate: false }])
+            .populate({ path: 'categoria', strictPopulate: false, match: { codigo: { $eq: categoria } } })
+            .skip(Number(skip))
+            .limit(Number(limit)).then((productos) => productos.filter(((productos) => productos.categoria != null)))
+    ]);
+});
 ProductoSchema.static('updateProducto', function updateProducto(producto) {
     return this.updateOne({ "_id": producto._id }, { "$set": {
             "nombre": producto.nombre,

@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { body } from 'express-validator';
 
-import { productoNuevo, productoObtener, productoListar, productoEliminar, productoActualizar } from '../controllers/productos';
+import { productoNuevo, productoObtener, productoListar, productoEliminar, productoActualizar, productoListarCalientito } from '../controllers/productos';
 import { validarCampos, validarJWT } from '../middlewares';
 import { existeCodigoProducto, existeNombreProducto } from '../helpers';
 
@@ -31,6 +31,10 @@ productoNuevo);
 
 router.get('/',        productoObtener);
 router.get('/listar',        productoListar);
+router.get('/listar/calientito',        [
+    validarJWT,
+    validarCampos
+], productoListarCalientito);
 router.post('/eliminar',        productoEliminar);
 router.post('/actualizar',        productoActualizar);
 

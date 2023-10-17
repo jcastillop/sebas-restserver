@@ -75,6 +75,8 @@ export const usuarioObtener = async (req: Request, res: Response) => {
 
 export const usuarioListar = async (req: Request, res: Response) => {
 
+    console.log("usuario listar")
+
     try {
         const { empresa, aplicacion, estado = true, limite = 5, desde = 0 } = req.body;
         

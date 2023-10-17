@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const models_1 = require("../models");
+const helpers_1 = require("../helpers");
 const validarJWT = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const token = req.header('x-token');
     if (!token) {
@@ -34,6 +35,8 @@ const validarJWT = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
                 msg: 'Token no valido - usuario inactivo'
             });
         }
+        helpers_1.appVars.aplicacion = usuario.aplicacion;
+        helpers_1.appVars.empresa = usuario.empresa;
         next();
     }
     catch (error) {
@@ -42,7 +45,6 @@ const validarJWT = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
             msg: 'Token no valido'
         });
     }
-    console.log(token);
 });
 exports.default = validarJWT;
 //# sourceMappingURL=validar-jwt.js.map

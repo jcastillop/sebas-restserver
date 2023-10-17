@@ -28,6 +28,10 @@ router.post('/', [
 ], productos_1.productoNuevo);
 router.get('/', productos_1.productoObtener);
 router.get('/listar', productos_1.productoListar);
+router.get('/listar/calientito', [
+    middlewares_1.validarJWT,
+    middlewares_1.validarCampos
+], productos_1.productoListarCalientito);
 router.post('/eliminar', productos_1.productoEliminar);
 router.post('/actualizar', productos_1.productoActualizar);
 exports.default = router;
