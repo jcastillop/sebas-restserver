@@ -29,7 +29,7 @@ class Server {
             productos: '/api/productos',
         };
         this.app = (0, express_1.default)();
-        this.port = process.env.PORT || '8800';
+        this.port = '80';
         this.conectarDB();
         this.middlewares();
         this.routes();

@@ -1,0 +1,20 @@
+# This file specifies files that are _not_ uploaded to Google Cloud Platform
+
+# using gcloud. It follows the same syntax as .gitignore, with the addition of
+
+.gcloudignore
+
+# Node.js dependencies:
+
+node_modules/
+
+# Archivos de log:
+
+log/
+
+# Don't upload the src files as they are compiled to javascript anyway
+
+src/
+tsconfig.json
+webpack.config.ts
+webpackdev.config.ts
