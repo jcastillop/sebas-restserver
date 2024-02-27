@@ -56,6 +56,9 @@ ClienteSchema.static('saveCliente', function saveCliente(cliente, id_empresa) {
 ClienteSchema.static('getCliente', function getCliente(id) {
     return this.findById(id);
 });
+ClienteSchema.static('getClienteByDocument', function getCliente(valor) {
+    return this.findOne({ numero_documento: valor });
+});
 ClienteSchema.static('getClientes', function getClientes(skip, limit, estado) {
     const parametros = { estado: estado };
     return Promise.all([

@@ -2,9 +2,10 @@ import express, { Application, Request, Response, NextFunction } from 'express';
 import cors from 'cors'
 
 import dbConnnection from '../database/config';
-import userRoutes from '../routes/usuarios';
 import authRoutes from '../routes/auth';
 import categoriaRoutes from '../routes/categorias';
+import clienteRoutes from '../routes/clientes';
+import userRoutes from '../routes/usuarios';
 import productoRoutes from '../routes/productos';
 import { Log4js } from '../helpers';
 
@@ -17,6 +18,7 @@ class Server{
         auth: '/api/auth',
         categorias: '/api/categorias',
         productos: '/api/productos',
+        clientes: '/api/clientes',
     }
 
     constructor(){
@@ -66,6 +68,7 @@ class Server{
         this.app.use(this.apiPaths.auth, authRoutes);
         this.app.use(this.apiPaths.categorias, categoriaRoutes);
         this.app.use(this.apiPaths.productos, productoRoutes);
+        this.app.use(this.apiPaths.clientes, clienteRoutes);
     }
 
     listen(){

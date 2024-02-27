@@ -16,6 +16,7 @@ export interface IClienteMethods {
 export interface ClienteModel extends Model<ICliente, {}, IClienteMethods> {
     saveCliente(cliente: ICliente): Promise<HydratedDocument<ICliente>>;
     getCliente(id: Schema.Types.ObjectId): Promise<HydratedDocument<ICliente>>;
+    getClienteByDocument(valor:string): Promise<HydratedDocument<ICliente>>;
     getClientes(skip: number, limit: number, estado: boolean): Promise<HydratedDocument<ICliente[]>>;
     updateCliente(cliente: ICliente): Promise<HydratedDocument<ICliente, IUpdateService>>;
     deleteCliente(id: Schema.Types.ObjectId): Promise<HydratedDocument<IUpdateService>>;

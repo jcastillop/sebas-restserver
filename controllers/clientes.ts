@@ -87,6 +87,36 @@ export const clienteObtener = async (req: Request, res: Response) => {
     }
 }
 
+export const clienteBuscarPorDocumento = async (req: Request, res: Response) => {
+    try {
+        const { valor } = req.body;
+        
+        const cliente = await Cliente.getClienteByDocument(valor);
+
+        if(cliente){
+            res.json({
+                messsage: 'clienteObtener - Cliente encontrado',
+                cliente: cliente,
+                hasError:false
+            }); 
+        }else{
+            res.json({
+                messsage: 'clienteObtener - No se encontró cliente',
+                cliente: null,
+                hasError:true
+            }); 
+        }
+       
+    } catch (error) {
+        //log4js( error, 'error');
+        res.status(404).json({
+            messsage: `Error no identificado ${ error }`,
+            cliente: null,
+            hasError:true
+        });                 
+    }
+}
+
 export const clienteListar = async (req: Request, res: Response) => {
     try {
         const { estado = true, limite = 10, desde = 0 } = req.body;

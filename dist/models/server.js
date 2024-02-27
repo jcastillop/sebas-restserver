@@ -15,9 +15,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const config_1 = __importDefault(require("../database/config"));
-const usuarios_1 = __importDefault(require("../routes/usuarios"));
 const auth_1 = __importDefault(require("../routes/auth"));
 const categorias_1 = __importDefault(require("../routes/categorias"));
+const clientes_1 = __importDefault(require("../routes/clientes"));
+const usuarios_1 = __importDefault(require("../routes/usuarios"));
 const productos_1 = __importDefault(require("../routes/productos"));
 const helpers_1 = require("../helpers");
 class Server {
@@ -27,6 +28,7 @@ class Server {
             auth: '/api/auth',
             categorias: '/api/categorias',
             productos: '/api/productos',
+            clientes: '/api/clientes',
         };
         this.app = (0, express_1.default)();
         this.port = '80';
@@ -72,6 +74,7 @@ class Server {
         this.app.use(this.apiPaths.auth, auth_1.default);
         this.app.use(this.apiPaths.categorias, categorias_1.default);
         this.app.use(this.apiPaths.productos, productos_1.default);
+        this.app.use(this.apiPaths.clientes, clientes_1.default);
     }
     listen() {
         this.app.listen(this.port, () => {

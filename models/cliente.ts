@@ -36,6 +36,9 @@ ClienteSchema.static('saveCliente', async function saveCliente( cliente: IClient
 ClienteSchema.static('getCliente', function getCliente( id: Schema.Types.ObjectId ) {
     return this.findById(id);
 });
+ClienteSchema.static('getClienteByDocument', function getCliente( valor:string ) {
+    return this.findOne({ numero_documento: valor });
+});
 ClienteSchema.static('getClientes', function getClientes( skip: number, limit: number, estado: boolean ) {
 
     const parametros = { estado : estado }

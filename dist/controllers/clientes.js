@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.clienteEliminar = exports.clienteActualizar = exports.clienteListar = exports.clienteObtener = exports.clienteNuevo = void 0;
+exports.clienteEliminar = exports.clienteActualizar = exports.clienteListar = exports.clienteBuscarPorDocumento = exports.clienteObtener = exports.clienteNuevo = void 0;
 const models_1 = require("../models");
 const helpers_1 = require("../helpers");
 const clienteNuevo = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -88,6 +88,35 @@ const clienteObtener = (req, res) => __awaiter(void 0, void 0, void 0, function*
     }
 });
 exports.clienteObtener = clienteObtener;
+const clienteBuscarPorDocumento = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { valor } = req.body;
+        const cliente = yield models_1.Cliente.getClienteByDocument(valor);
+        if (cliente) {
+            res.json({
+                messsage: 'clienteObtener - Cliente encontrado',
+                cliente: cliente,
+                hasError: false
+            });
+        }
+        else {
+            res.json({
+                messsage: 'clienteObtener - No se encontró cliente',
+                cliente: null,
+                hasError: true
+            });
+        }
+    }
+    catch (error) {
+        //log4js( error, 'error');
+        res.status(404).json({
+            messsage: `Error no identificado ${error}`,
+            cliente: null,
+            hasError: true
+        });
+    }
+});
+exports.clienteBuscarPorDocumento = clienteBuscarPorDocumento;
 const clienteListar = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { estado = true, limite = 10, desde = 0 } = req.body;
